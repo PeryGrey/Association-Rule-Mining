@@ -3,9 +3,12 @@ from cba import CBA
 import pandas as pd
 import random
 import numpy as np
+from sklearn.utils import shuffle
 
 data_train = pd.read_csv("discretized-heart.csv")
 data_test = pd.read_csv("discretized-heart.csv")
+data_train = shuffle(data_train)
+data_test = shuffle(data_test)
 
 block_size = int(len(data_train) / 10)
 split_point = [k * block_size for k in range(0, 10)]
