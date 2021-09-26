@@ -1,8 +1,8 @@
 from m1algorithm import M1Algorithm
 from m2algorithm import M2Algorithm
-from .rule_algorithm import *
+from rule_algorithm import RuleBuilderAlgorithm
 from rule_generation import createCARs, generateCARs, top_rules
-from .data_structures import TransactionDB
+from data_structures import TransactionDB
 
 
 class CBA():
@@ -71,6 +71,7 @@ class CBA():
         else:
             rules = top_rules(transactions.string_representation,
                               appearance=transactions.appeardict, **top_rules_args)
+            print("Length of Rules: ", len(rules))
             cars = createCARs(rules)
 
         self.clf = used_algorithm(cars, transactions).build()

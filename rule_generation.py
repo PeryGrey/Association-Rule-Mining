@@ -7,16 +7,6 @@ import logging
 def createCARs(rules):
     """Function for converting output from fim.arules or fim.apriori
     to a list of ClassAssociationRules
-
-    Parameters
-    ----------
-    rules : output from fim.arules or from generateCARs
-
-
-    Returns
-    -------
-    list of CARs
-
     """
     CARs = []
 
@@ -35,36 +25,12 @@ def createCARs(rules):
         CARs.append(CAR)
 
     CARs.sort(reverse=True)
-
+    print("Length of rules: ", len(rules))
     return CARs
 
 
 def generateCARs(transactionDB, support=1, confidence=50, maxlen=10, **kwargs):
     """Function for generating ClassAssociationRules from a TransactionDB
-
-    Parameters
-    ----------
-    transactionDB : TransactionDB
-
-    support : float
-        minimum support in percents if positive
-        absolute minimum support if negative
-
-    confidence : float
-        minimum confidence in percents if positive
-        absolute minimum confidence if negative
-
-    maxlen : int
-        maximum length of mined rules
-
-    **kwargs : 
-        arbitrary number of arguments that will be 
-        provided to the fim.apriori function
-
-    Returns
-    -------
-    list of CARs
-
     """
     appear = transactionDB.appeardict
 
@@ -87,43 +53,6 @@ def top_rules(transactions,
               max_iterations=30):
     """Function for finding the best n (target_rule_count)
     rules from transaction list
-
-    Parameters
-    ----------
-    transactions : 2D array of strings
-        e.g. [["a:=:1", "b:=:3"], ["a:=:4", "b:=:2"]]
-
-    appearance : dictionary
-        dictionary specifying rule appearance
-
-    targent_rule_count : int
-        target number of rules to mine
-
-    init_conf : float
-        confidence from which to start mining
-
-    conf_step : float
-
-    supp_step : float
-
-    minen : int
-        minimum len of rules to mine
-
-    init_maxlen : int
-        maxlen from which to start mining
-
-    total_timeout : float
-        maximum execution time of the function
-
-    max_iterations : int
-        maximum iterations to try before stopping
-        execution
-
-
-    Returns
-    -------
-    list of mined rules. The rules are not ordered.
-
     """
 
     starttime = time.time()

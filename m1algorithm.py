@@ -7,8 +7,6 @@ import random
 
 
 class M1Algorithm(RuleBuilderAlgorithm):
-    """ M1 Algorithm implementation.
-    """
 
     def build(self):
 
@@ -46,6 +44,7 @@ class M1Algorithm(RuleBuilderAlgorithm):
         # this variable. Length is updated by subtracting
         # absolute support of a rule from it
         dataset_len_updated = dataset_len
+        # print("abc:", print(self.rules))
 
         for rule in self.rules:
             # if all data cases have been covered
@@ -144,6 +143,10 @@ class M1Algorithm(RuleBuilderAlgorithm):
             idx_to_cut = total_errors.index(min_errors)
 
             final_classifier = classifier[:idx_to_cut+1]
+            # print("M1 Algo Classifier: ", classifier)
+            print("M1 Algo Classifier Length: ", len(classifier))
+            # print(final_classifier)
+            print("M1 pruned Classifier length: ", len(final_classifier))
             default_class = default_classes[idx_to_cut]
 
             # creating the final classifier
