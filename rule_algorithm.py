@@ -1,6 +1,6 @@
 from collections import Counter
 
-from data_structures import ClassAssocationRule, Antecedent, Consequent
+from models import ClassAssocationRule, Antecedent, Consequent
 
 
 class RuleBuilderAlgorithm:

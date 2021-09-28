@@ -1,16 +1,13 @@
 from rule_algorithm import RuleBuilderAlgorithm
-from classifier import Classifier
-from data_structures import ClassAssocationRule, Antecedent, Consequent
+from models.classifier import Classifier
+from models import ClassAssocationRule, Antecedent, Consequent
 
 import random
 
 import collections
 
-
+# M2 Algorithm implementation
 class M2Algorithm(RuleBuilderAlgorithm):
-    """
-    Implementation of M2 Algorithm for CBA.
-    """
 
     def build(self):
 
@@ -19,14 +16,13 @@ class M2Algorithm(RuleBuilderAlgorithm):
         self.dataset_frozen = self.dataset
         self.dataset_len = len(self.dataset_frozen)
 
-        # set of crules that have higher precedence
-        # that their corresponding wrules
+        # crules that have higher precedence that  wrules
         self.Q = set()
 
-        # set of all crules
+        # crules
         self.U = set()
 
-        # set of conflicting rules
+        # conflicting rules
         self.A = set()
 
         self.classifier = []
@@ -92,7 +88,8 @@ class M2Algorithm(RuleBuilderAlgorithm):
 
         # class distribution
         classdist = collections.Counter(
-            map(lambda d: d.class_val.value, self.dataset_frozen))
+            map(lambda d: d.class_val.value, self.dataset_frozen)
+        )
         classdist_keys = list(classdist.keys())
 
         for rule in Qlist:
@@ -124,11 +121,14 @@ class M2Algorithm(RuleBuilderAlgorithm):
         if len(total_errors_list) != 0:
             min_value = min(total_errors_list)
 
-            min_indices = [idx for (idx, err_num) in enumerate(
-                total_errors_list) if err_num == min_value]
+            min_indices = [
+                idx
+                for (idx, err_num) in enumerate(total_errors_list)
+                if err_num == min_value
+            ]
             min_idx = min_indices[0]
 
-            final_classifier = [rule for rule in rules_list[:min_idx + 1]]
+            final_classifier = [rule for rule in rules_list[: min_idx + 1]]
             default_class = default_classes_list[min_idx]
 
             if not default_class:
@@ -142,10 +142,10 @@ class M2Algorithm(RuleBuilderAlgorithm):
             self.default_class_attribute = classdist_keys[0][0]
         else:
             possible_default_classes = list(classdist)
-            random_class_idx = random.randrange(
-                0, len(possible_default_classes))
+            random_class_idx = random.randrange(0, len(possible_default_classes))
             default_class_att, default_class_value = list(classdist.keys())[
-                random_class_idx]
+                random_class_idx
+            ]
 
             self.classifier = []
             self.default_class = default_class_value
@@ -188,29 +188,23 @@ class M2Algorithm(RuleBuilderAlgorithm):
         return crule, wrule
 
     def allcover_rules(self, U, datacase, crule):
-        """method for finding all rules from a set U
-        that cover datacase and have a higher precedence
-        tha crule
-        """
         wset = set()
 
         for replacingrule in U:
-            if replacingrule > crule and replacingrule.antecedent <= datacase and replacingrule.consequent.value != datacase.class_val.value:
+            if (
+                replacingrule > crule
+                and replacingrule.antecedent <= datacase
+                and replacingrule.consequent.value != datacase.class_val.value
+            ):
                 wset.add(replacingrule)
 
         return wset
 
     def errors_of_rule(self, rule):
-        """method for computing errors of
-        a rule
-        """
         rule.support_count = sum(rule.class_cases_covered.values())
         return rule.support_count - rule.class_cases_covered[rule.consequent.value]
 
     def select_default_class(self, classdist):
-        """method for selecting default class
-        from class distribution
-        """
         most_common = classdist.most_common(1)
 
         if not most_common:

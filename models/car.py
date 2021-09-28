@@ -1,6 +1,7 @@
 import collections
 
-class ClassAssocationRule():
+
+class ClassAssocationRule:
     """ClassAssociationRule (CAR) is defined by its antecedent, consequent,
     support, confidence and id. 
 
@@ -50,11 +51,11 @@ class ClassAssocationRule():
 
     class_cases_covered: collections.Counter
         counter for determining which transactions are
-        covered by the antecedent. Important for M2Algorithm.
+        covered by the antecedent. Important for M2Classifier.
     
     replace: set of ClassAssociationRule
         set of rules that have higher precedence than
-        this rule and can replace it in M2Algorithm.
+        this rule and can replace it in M2Classifier.
 
 
     """
@@ -72,42 +73,44 @@ class ClassAssocationRule():
         ClassAssocationRule.id += 1
 
         self.support_count = 0
-        
+
         self.marked = False
-        
+
         self.class_cases_covered = collections.Counter()
         self.replace = set()
-        
-        
+
     def __gt__(self, other):
         """
         precedence operator. Determines if this rule
         has higher precedence. Rules are sorted according
         to their confidence, support, length and id.
         """
-        if (self.confidence > other.confidence):
+        if self.confidence > other.confidence:
             return True
-        elif (self.confidence == other.confidence and
-              self.support > other.support):
+        elif self.confidence == other.confidence and self.support > other.support:
             return True
-        elif (self.confidence == other.confidence and
-              self.support == other.support and
-              self.rulelen < other.rulelen):
+        elif (
+            self.confidence == other.confidence
+            and self.support == other.support
+            and self.rulelen < other.rulelen
+        ):
             return True
-        elif(self.confidence == other.confidence and
-              self.support == other.support and
-              self.rulelen == other.rulelen and
-              self.rid < other.rid):
+        elif (
+            self.confidence == other.confidence
+            and self.support == other.support
+            and self.rulelen == other.rulelen
+            and self.rid < other.rid
+        ):
             return True
         else:
             return False
-    
+
     def __lt__(self, other):
         """
         rule precedence operator
         """
         return not self > other
-    
+
     def __len__(self):
         """
         returns
@@ -117,9 +120,15 @@ class ClassAssocationRule():
         """
         return len(self.antecedent) + len(self.consequent)
 
-
     def __repr__(self):
-        args = [self.antecedent.string(), "{" + self.consequent.string() + "}", self.support, self.confidence, self.rulelen, self.rid]
+        args = [
+            self.antecedent.string(),
+            "{" + self.consequent.string() + "}",
+            self.support,
+            self.confidence,
+            self.rulelen,
+            self.rid,
+        ]
         text = "CAR {} => {} sup: {:.2f} conf: {:.2f} len: {}, id: {}".format(*args)
 
         return text
