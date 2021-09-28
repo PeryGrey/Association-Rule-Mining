@@ -26,7 +26,7 @@ class CBA:
     
     def fit(self, transactions):  # transactions = txns_train
         self.target_class = transactions.header[-1]  #'class'
-        if self.classification_algorithms == "m1":
+        if self.classification_algorithm == "m1":
             classifier = M1Classifier
         else:
             classifier = M2Classifier

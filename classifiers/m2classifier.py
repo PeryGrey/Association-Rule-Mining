@@ -7,7 +7,7 @@ import random
 import collections
 
 # M2 Algorithm implementation
-class M2Algorithm(RuleBuilderAlgorithm):
+class M2Classifier(RuleBuilderAlgorithm):
 
     def build(self):
 

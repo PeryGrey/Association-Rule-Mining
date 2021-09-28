@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.utils import shuffle
 import evaluate as Evaluate
 
-data_train = pd.read_csv("datasets/iris.csv")
-data_test = pd.read_csv("datasets/iris.csv")
+data_train = pd.read_csv("datasets/discretized-iris.csv")
+data_test = pd.read_csv("datasets/discretized-iris.csv")
 data_train = shuffle(data_train)
 data_test = shuffle(data_test)
 
