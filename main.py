@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.utils import shuffle
 import evaluate as Evaluate
 
-data_train = pd.read_csv("datasets/discretized-iris.csv")
-data_test = pd.read_csv("datasets/discretized-iris.csv")
+data_train = pd.read_csv("datasets/discretized-breast-cancer-wisconsin.csv")
+data_test = pd.read_csv("datasets/discretized-breast-cancer-wisconsin.csv")
 data_train = shuffle(data_train)
 data_test = shuffle(data_test)
 
@@ -18,9 +18,9 @@ accuracies = []
 
 for k in range(len(split_point) - 1):
     print("\nRound %d:" % k)
-    test_dataset = data_test[split_point[k] : split_point[k + 1]]
-    train_dataset = data_train[0 : split_point[k]].append(
-        data_train[split_point[k + 1] :]
+    test_dataset = data_test[split_point[k]: split_point[k + 1]]
+    train_dataset = data_train[0: split_point[k]].append(
+        data_train[split_point[k + 1]:]
     )
     txns_train = TransactionDB.from_DataFrame(train_dataset)
     txns_test = TransactionDB.from_DataFrame(test_dataset)

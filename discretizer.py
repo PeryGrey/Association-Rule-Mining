@@ -2,11 +2,10 @@ from mdlp.discretization import MDLP
 from sklearn.datasets import load_iris, load_breast_cancer
 import pandas as pd
 
-z = pd.read_csv('adult.csv')
+z = pd.read_csv('datasets/acute-inflammations.csv')
 transformer = MDLP()
-X, y = z, z['income']
-X.drop(['workclass', 'education', 'marital.status', 'occupation', 'relationship',
-        'race', 'sex', 'native.country', 'income'], inplace=True, axis=1)
+X, y = z, z['Class']
+X.drop(['Class', 'V2', 'V3', 'V4', 'V5', 'V6'], inplace=True, axis=1)
 ar = ['clump_thickness', 'size_uniformity', 'shape_uniformity', 'marginal_adhesion',
       'epithelial_size', 'bare_nucleoli', 'bland_chromatin', 'normal_nucleoli', 'mitoses']
 ar1 = ['RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe']
@@ -15,8 +14,10 @@ ar2 = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
 ar3 = ['A2', 'A3', 'A8', 'A11', 'A14', 'A15']
 ar4 = ['age', 'fnlwgt', 'education.num',
        'capital.gain', 'capital.loss', 'hours.per.week']
+ar5 = ['left-weight', 'left-distance', 'right-weight', 'right-distance']
+ar6 = ['V1']
 X_disc = transformer.fit_transform(X, y)
 # print(X_disc)
 
-b = pd.DataFrame(data=X_disc, columns=ar4)
-b.to_csv('discretized-adult.csv')
+b = pd.DataFrame(data=X_disc, columns=ar6)
+b.to_csv('discretized-acute-inflammations.csv')
