@@ -20,18 +20,35 @@ class CBA:
             self.classification_algorithm,
         )
         self.maxlen = maxlen
+        self.clf = None
         self.classifier = None
         self.target_class = None
+        self.available_algorithms = {
+            "m1": M1Classifier,
+            "m2": M2Classifier
+        }
 
-    
+    def rule_model_accuracy(self, txns):
+        """Takes a TransactionDB and outputs
+        accuracy of the classifier
+        """
+        if not self.clf:
+            raise Exception("CBA must be trained using fit method first")
+        if not isinstance(txns, TransactionDB):
+            raise Exception("txns must be of type TransactionDB")
+
+        return self.clf.test_transactions(txns)
+
     def fit(self, transactions):  # transactions = txns_train
-        self.target_class = transactions.header[-1]  #'class'
+        self.target_class = transactions.header[-1]  # 'class'
         if self.classification_algorithm == "m1":
             classifier = M1Classifier
         else:
             classifier = M2Classifier
 
         assoc_rules = None
+
+        used_algorithm = self.available_algorithms[self.classification_algorithm]
 
         assoc_rules = generateARs(  # generate top association rules
             transactions,
@@ -45,5 +62,6 @@ class CBA:
         self.classifier = classifier(
             cars, transactions
         ).train()  # M1Classifier(cars, txns_train).build() - get the classifier and the rules it is using
+        self.clf = used_algorithm(cars, transactions).train()
 
         return self.classifier
