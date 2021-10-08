@@ -3,6 +3,8 @@ from models import TransactionDB
 from qcba.data_structures import QuantitativeDataFrame
 import pandas as pd
 from qcba import QCBA
+from sklearn.utils import shuffle
+
 
 from qcba.data_structures import (
     IntervalReader,
@@ -22,9 +24,16 @@ interval_reader.compile_reader()
 
 QuantitativeCAR.interval_reader = interval_reader
 
-data_train_discretized = pd.read_csv("qcba_datasets/binned-pima.csv")
-data_train_undiscretized = pd.read_csv("qcba_datasets/pima.csv")
-data_test = pd.read_csv("qcba_datasets/binned-pima.csv")
+data_train_discretized = pd.read_csv(
+    "qcba_datasets/binned-tic-tac-toe-endgame.csv")
+data_train_undiscretized = pd.read_csv(
+    "qcba_datasets/tic-tac-toe-endgame.csv")
+data_test = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
+
+# data_train_discretized = shuffle(data_train_discretized)
+# data_train_undiscretized = shuffle(data_train_undiscretized)
+# data_test = shuffle(data_test)
+
 
 txns_train = TransactionDB.from_DataFrame(data_train_discretized)
 txns_test = TransactionDB.from_DataFrame(data_test)
