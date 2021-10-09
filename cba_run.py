@@ -1,5 +1,5 @@
 from models import TransactionDB
-from cba import CBA
+from cba import ClassificationBasedAssociation
 import pandas as pd
 import random
 import numpy as np
@@ -18,13 +18,13 @@ accuracies = []
 
 for k in range(len(split_point) - 1):
     print("\nRound %d:" % k)
-    test_dataset = data_test[split_point[k]: split_point[k + 1]]
-    train_dataset = data_train[0: split_point[k]].append(
-        data_train[split_point[k + 1]:]
+    test_dataset = data_test[split_point[k] : split_point[k + 1]]
+    train_dataset = data_train[0 : split_point[k]].append(
+        data_train[split_point[k + 1] :]
     )
     txns_train = TransactionDB.from_DataFrame(train_dataset)
     txns_test = TransactionDB.from_DataFrame(test_dataset)
-    cba = CBA(support=0.01, confidence=0.5, classifier="m1")
+    cba = ClassificationBasedAssociation(support=0.01, confidence=0.5, classifier="m1")
     classifier = cba.fit(txns_train)
     accuracy = Evaluate.evaluate(classifier, txns_test)
     accuracies.append(accuracy)

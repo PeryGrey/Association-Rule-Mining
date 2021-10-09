@@ -4,7 +4,6 @@ from pyarc.qcba.data_structures import Interval
 
 
 class TestInterval(unittest.TestCase):
-
     def test_overlaps_with(self):
         i1 = Interval(3, 5, True, True)
         i2 = Interval(4, 4.5, True, True)

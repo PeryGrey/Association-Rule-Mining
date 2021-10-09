@@ -5,8 +5,7 @@ from rule_generator import convertToCARs, generateARs
 from models import TransactionDB
 
 
-class CBA:
-
+class ClassificationBasedAssociation:
     def __init__(self, support=10, confidence=50, maxlen=100, classifier="m1"):
         self.support = support
         self.confidence = confidence
@@ -23,15 +22,9 @@ class CBA:
         self.clf = None
         self.classifier = None
         self.target_class = None
-        self.available_algorithms = {
-            "m1": M1Classifier,
-            "m2": M2Classifier
-        }
+        self.available_algorithms = {"m1": M1Classifier, "m2": M2Classifier}
 
     def rule_model_accuracy(self, txns):
-        """Takes a TransactionDB and outputs
-        accuracy of the classifier
-        """
         if not self.clf:
             raise Exception("CBA must be trained using fit method first")
         if not isinstance(txns, TransactionDB):

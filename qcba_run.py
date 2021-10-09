@@ -1,4 +1,4 @@
-from cba import CBA
+from cba import ClassificationBasedAssociation
 from models import TransactionDB
 from qcba.data_structures import QuantitativeDataFrame
 import pandas as pd
@@ -10,7 +10,7 @@ from qcba.data_structures import (
     IntervalReader,
     Interval,
     QuantitativeDataFrame,
-    QuantitativeCAR
+    QuantitativeCAR,
 )
 
 interval_reader = IntervalReader()
@@ -24,10 +24,8 @@ interval_reader.compile_reader()
 
 QuantitativeCAR.interval_reader = interval_reader
 
-data_train_discretized = pd.read_csv(
-    "qcba_datasets/binned-tic-tac-toe-endgame.csv")
-data_train_undiscretized = pd.read_csv(
-    "qcba_datasets/tic-tac-toe-endgame.csv")
+data_train_discretized = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
+data_train_undiscretized = pd.read_csv("qcba_datasets/tic-tac-toe-endgame.csv")
 data_test = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
 
 # data_train_discretized = shuffle(data_train_discretized)
@@ -42,7 +40,7 @@ txns_test = TransactionDB.from_DataFrame(data_test)
 quant_dataframe_train_disc = QuantitativeDataFrame(data_train_discretized)
 quant_dataframe_train_undisc = QuantitativeDataFrame(data_train_undiscretized)
 
-cba = CBA()
+cba = ClassificationBasedAssociation()
 cba.fit(txns_train)
 cba.rule_model_accuracy(txns_train)
 

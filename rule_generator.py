@@ -5,20 +5,11 @@ import logging
 
 
 def convertToCARs(rules):  # coverts apriori rules to CARS format
-    """Function for converting apriori rules to CARs format
-
-    rules : Association rules from generateARs
-    
-    Returns
-    -------
-    list of CARs
-
-    """
     CARs = []
 
     for rule in rules:
         rhs_tmp, lhs_tmp, support, confidence = rule
-        rhs = Consequent(*rhs_tmp.split(":=:"))  # ['class', 'Iris-setosa']
+        rhs = Consequent(*rhs_tmp.split(":=:"))
 
         # so that the order of items in antecedent is always the same
         lhs_tmp = sorted(list(lhs_tmp))
@@ -31,31 +22,14 @@ def convertToCARs(rules):  # coverts apriori rules to CARS format
         CARs.append(CAR)
 
     CARs.sort(reverse=True)
-
+    print("ex CAR: ", CARs[-1])
     return CARs
 
 
 def generateARs(
     transactionDB, support=1, confidence=50, maxlen=10, **kwargs
 ):  # generates Assoc. rules using apriori and converts them to CARS
-    """Function for generating ClassAssociationRules from a TransactionDB
 
-    Parameters
-    ----------
-    transactionDB : TransactionDB
-
-    support : float
-    confidence : float
-    maxlen : int
-    **kwargs : 
-        arbitrary number of arguments that will be 
-        provided to the fim.apriori function
-
-    Returns
-    -------
-    list of CARs
-
-    """
     appear = transactionDB.appeardict
     print("Mining top association rules")
     rules = fim.apriori(
@@ -89,46 +63,6 @@ def top_rules(
     total_timeout=100.0,
     max_iterations=30,
 ):
-    """Function for finding the best n (target_rule_count)
-    rules from transaction list
-
-    Parameters
-    ----------
-    transactions : 2D array of strings
-        e.g. [["a:=:1", "b:=:3"], ["a:=:4", "b:=:2"]]
-
-    appearance : dictionary
-        dictionary specifying rule appearance
-
-    targent_rule_count : int
-        target number of rules to mine
-
-    init_conf : float
-        confidence from which to start mining
-
-    conf_step : float
-
-    supp_step : float
-
-    minen : int
-        minimum len of rules to mine
-
-    init_maxlen : int
-        maxlen from which to start mining
-
-    total_timeout : float
-        maximum execution time of the function
-
-    max_iterations : int
-        maximum iterations to try before stopping
-        execution
-
-
-    Returns
-    -------
-    list of mined rules. The rules are not ordered.
-
-    """
 
     starttime = time.time()
 

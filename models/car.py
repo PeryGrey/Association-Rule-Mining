@@ -2,63 +2,6 @@ import collections
 
 
 class ClassAssocationRule:
-    """ClassAssociationRule (CAR) is defined by its antecedent, consequent,
-    support, confidence and id. 
-
-    It has a set of Items in its antecedent and one Item in its
-    Consequent. 
-
-    __lt__ and __gt__ operators are overriden so that list of CARs can
-    be sorted.  
-    
-    
-    Parameters
-    ----------
-    
-    antecedent: Antecedent
-        Items that a Transaction has to satisfy
-   
-    consequent: Consequent
-        Target class of a Transaction that satisfies
-        antecedent
-    
-    support: float
-        how many transactions satisfy the rule, relatively
-    
-    confidence: float
-        relative degree of certainty that consequent holds
-        given antecedent
-
-
-
-    Attributes
-    ----------
-    antecedent
-
-    conseqent
-
-    support
-
-    confidence
-
-    rid: int
-        rule id
-
-    support_count: int
-        absolute support count
-
-    marked: bool
-
-    class_cases_covered: collections.Counter
-        counter for determining which transactions are
-        covered by the antecedent. Important for M2Classifier.
-    
-    replace: set of ClassAssociationRule
-        set of rules that have higher precedence than
-        this rule and can replace it in M2Classifier.
-
-
-    """
 
     id = 0
 
@@ -115,8 +58,8 @@ class ClassAssocationRule:
         """
         returns
         -------
-        
-        length of this rule 
+
+        length of this rule
         """
         return len(self.antecedent) + len(self.consequent)
 
