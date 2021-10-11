@@ -2,15 +2,6 @@ import pandas
 
 
 class LiteralCache:
-    """class which stores literals
-    and corresponding truth values
-    e.g. [
-        "food=banana": [True, True, False, False, True],
-        "food=apple" : [True, True, True, True, False]
-    ]
-    
-    """
-    
     def __init__(self):
         self.__cache = {}
 
@@ -26,8 +17,6 @@ class LiteralCache:
         """
         
         return literal in self.__cache.keys()
-
-
 
     import pandas
 import numpy as np
@@ -98,30 +87,7 @@ class QuantitativeDataFrame:
 
         return cummulated_mask
     
-    
-    def find_covered_by_literal_mask(self, literal):
-        """
-        returns:
-            mask - an array of boolean values indicating which instances
-            are covered by literal
-        """
-        
-        for literal in rule.antecedent:
-            attribute, interval = literal
-            
-            # the column that concerns the
-            # iterated attribute
-            # instead of pandas.Series, grab the ndarray
-            # using values attribute
-            relevant_column = self.__dataframe[[attribute]].values.reshape(dataset_size)
-            
-            # this tells us which instances satisfy the literal
-            current_mask = self.get_literal_coverage(literal, relevant_column)
-            
-            # add cummulated and current mask using logical AND
-            cummulated_mask &= current_mask
-    
-    
+       
     def find_covered_by_rule_mask(self, rule):
         """
         returns:

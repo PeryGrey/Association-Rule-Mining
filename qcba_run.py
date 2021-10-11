@@ -36,7 +36,6 @@ data_test = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
 txns_train = TransactionDB.from_DataFrame(data_train_discretized)
 txns_test = TransactionDB.from_DataFrame(data_test)
 
-
 quant_dataframe_train_disc = QuantitativeDataFrame(data_train_discretized)
 quant_dataframe_train_undisc = QuantitativeDataFrame(data_train_undiscretized)
 
@@ -44,7 +43,18 @@ cba = ClassificationBasedAssociation()
 cba.fit(txns_train)
 cba.rule_model_accuracy(txns_train)
 
+print("-"*50)
+
 qcba_cba = QCBA(quant_dataframe_train_undisc, cba_rule_model=cba)
-qcba_cba.fit()
+qcba_stages = {
+    "refitting": True,
+    "literal_pruning": True,
+    "trimming": True,
+    "extension": True,
+    "overlap_pruning": True,
+    "based_drop": True}
+
+qcba_cba.fit(qcba_stages)
+
 print("CBA accuracy:", cba.rule_model_accuracy(txns_train))
 print("QCBA accuracy:", qcba_cba.score(quant_dataframe_train_undisc))

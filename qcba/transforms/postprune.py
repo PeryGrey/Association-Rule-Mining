@@ -8,7 +8,7 @@ import numpy as np
 from ..data_structures import QuantitativeDataFrame, Interval
 
 
-class RulePostPruner:
+class PostPrune:
     
     def __init__(self, quantitative_dataset):
         self.__dataframe = quantitative_dataset

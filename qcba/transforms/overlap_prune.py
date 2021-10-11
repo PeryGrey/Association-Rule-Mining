@@ -4,7 +4,7 @@ import numpy as np
 from ..data_structures import QuantitativeDataFrame, Interval
 
 
-class RuleOverlapPruner:
+class Prune_Overlap:
     
     def __init__(self, quantitative_dataset):
         self.__dataframe = quantitative_dataset

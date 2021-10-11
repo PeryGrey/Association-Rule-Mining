@@ -4,7 +4,7 @@ import math
 
 from ..data_structures import QuantitativeDataFrame, Interval
 
-class RuleExtender:
+class Extend:
     
     def __init__(self, dataframe):
     

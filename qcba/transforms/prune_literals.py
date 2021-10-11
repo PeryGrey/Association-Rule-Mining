@@ -4,36 +4,24 @@ import numpy as np
 from ..data_structures import QuantitativeDataFrame, Interval
 
 
-class RuleLiteralPruner:
+class PruneLiterals:
     
     def __init__(self, quantitative_dataframe):
         self.__dataframe = quantitative_dataframe
         
-        
     def transform(self, rules):
-        copied_rules = [ rule.copy() for rule in rules  ]
-        trimmed = [ self.__trim(rule) for rule in copied_rules ]
-        
-        return trimmed
-    
-    
-    def produce_combinations(self, array):
-        arr_len = len(array)
-    
-        for i in range(arr_len):
-            combination = array[0:i] + array[i+1:arr_len]
-        
-            yield combination
-    
+        r = [rule.copy() for rule in rules]        
+        return [ self.__trim(rule) for rule in r ]
     
     def __trim(self, rule):
-        """
-        if type(rule) != QuantitativeCAR:
-            raise Exception("type of rule must be QuantClassAssociationRule")
-        """
-            
-        attr_removed = False
-    
+        def transfer_rule(rule, copied_rule):
+            rule.support = copied_rule.support
+            rule.confidence = copied_rule.confidence
+            rule.rulelen = copied_rule.rulelen
+            rule.antecedent = copied_rule.antecedent
+
+        removed = False
+   
         literals = rule.antecedent
         consequent = rule.consequent
         
@@ -45,31 +33,19 @@ class RuleLiteralPruner:
             return rule
 
         while True:
-            for literals_combination in self.produce_combinations(literals):
-                if not literals_combination:
-                    continue
-                    
-                copied_rule = rule.copy()
+            for pos in range(len(literals)):
+                literals_combination = literals[0:pos] + literals[pos+1:len(literals)]
                 
-                copied_rule.antecedent = literals_combination
-                copied_rule.update_properties(self.__dataframe)
+                c_rule = rule.copy()
+                c_rule.antecedent = literals_combination
+                c_rule.update_properties(self.__dataframe)
 
-                if copied_rule.confidence > rule.confidence:
-                    rule.support = copied_rule.support
-                    rule.confidence = copied_rule.confidence
-                    rule.rulelen = copied_rule.rulelen
-                    
-                    rule.antecedent = copied_rule.antecedent
-
-                    attr_removed = True
-                    
-                    break
-                    
+                if c_rule.confidence > rule.confidence:
+                    transfer_rule(rule, c_rule)
+                    removed = True
+                    break                    
                 else:
-                    attr_removed = False
-
-            if attr_removed == False:
+                    removed = False
+            if removed == False:
                 break
-                
-                
         return rule
