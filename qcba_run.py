@@ -24,9 +24,11 @@ interval_reader.compile_reader()
 
 QuantitativeCAR.interval_reader = interval_reader
 
-data_train_discretized = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
-data_train_undiscretized = pd.read_csv("qcba_datasets/tic-tac-toe-endgame.csv")
-data_test = pd.read_csv("qcba_datasets/binned-tic-tac-toe-endgame.csv")
+path = 'iris.csv'
+
+data_train_discretized = pd.read_csv(f"qcba_datasets/binned-{path}")
+data_train_undiscretized = pd.read_csv(f"qcba_datasets/{path}")
+data_test = pd.read_csv(f"qcba_datasets/binned-{path}")
 
 # data_train_discretized = shuffle(data_train_discretized)
 # data_train_undiscretized = shuffle(data_train_undiscretized)

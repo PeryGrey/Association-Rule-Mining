@@ -9,8 +9,28 @@ class Extend:
         self.__dataframe = dataframe
         
     def transform(self, rules):        
-        r = [ rule.copy() for rule in rules ]
-        return [self.__extend_rule(rule) for rule in r]
+        copied_rules = [ rule.copy() for rule in rules ]
+
+        progress_bar_len = 50
+        copied_rules_len = len(copied_rules)
+        progress_bar = "#" * progress_bar_len
+        progress_bar_empty = " " * progress_bar_len
+        last_progress_bar_idx = -1
+
+        extended_rules = []
+        for i, rule in enumerate(copied_rules):
+            current_progress_bar_idx = math.floor(i / copied_rules_len * progress_bar_len)
+            
+            if last_progress_bar_idx != current_progress_bar_idx:
+                last_progress_bar_idx = current_progress_bar_idx
+                
+                progress_string = "[" + progress_bar[:last_progress_bar_idx] + progress_bar_empty[last_progress_bar_idx:] + "]"
+                
+                print(*progress_string, sep="")
+
+            extended_rules.append(self.__extend_rule(rule))
+
+        return extended_rules
 
     def __extend_rule(self, rule):
         current_best = rule        
@@ -48,7 +68,6 @@ class Extend:
                             continue              
                         else:
                             break
-
                     if extension_succesful:
                         break  
                 else:

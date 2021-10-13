@@ -7,3 +7,4 @@ For folder transforms
 - refactored prune_literals.py
 - refactored trim.py
 - refactored extend.py
+- refactored postprune.py
