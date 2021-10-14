@@ -98,7 +98,6 @@ class IntervalReader():
             left_inclusive,
             right_inclusive
         )
-        print(interval)
 
         return interval
 

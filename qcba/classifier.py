@@ -8,41 +8,37 @@ class QuantitativeClassifier:
         self.default_class = default_class
         
         
-    def rule_model_accuracy(self, quantitative_dataframe, ground_truth):
-        predicted = self.predict(quantitative_dataframe)
+    def rule_model_accuracy(self, df, actual):
+        return accuracy_score(self.predict(df), actual)
 
-        return accuracy_score(predicted, ground_truth)
-
-    def predict(self, quantitative_dataframe):
-        predicted_classes = []
+    def predict(self, df):
+        pred = []
     
-        for _, row in quantitative_dataframe.dataframe.iterrows():
-            appended = False
+        for _, row in df.dataframe.iterrows():
+            found_rule = False
             for rule in self.rules:
-                antecedent_dict = dict(rule.antecedent)  
+                antc_dic = dict(rule.antecedent)  
                 counter = True
 
                 for name, value in row.iteritems():
-                    if name in antecedent_dict:
-                        interval = antecedent_dict[name]
+                    if name in antc_dic:
+                        range_ = antc_dic[name]
 
-                        if type(interval) == str:
-                            counter &= interval == value
+                        if type(range_) == str:
+                            counter &= range_ == value
                         else:
-                            result = interval.isin(value)
+                            result = range_.isin(value)
                             counter &= result
 
                 if counter:
-                    _, predicted_class = rule.consequent
-                    predicted_classes.append(predicted_class)
-                    appended = True
+                    _, pred_class = rule.consequent
+                    pred.append(pred_class)
+                    found_rule = True
                     break
                     
-            if not appended:
-                predicted_classes.append(self.default_class)
-
-                    
-        return predicted_classes            
+            if not found_rule:
+                pred.append(self.default_class)
+        return pred            
 
 
 
