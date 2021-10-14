@@ -11,30 +11,122 @@ class Prune_Overlap:
         
         
     def transform(self, rules, default_class, transaction_based=True):
-        return self.prune_transaction_based([ i.copy() for i in rules ], default_class)
+        copied_rules = [ rule.copy() for rule in rules ]
+
+        pruned_rules = copied_rules
+
+        if transaction_based:
+            pruned_rules = self.prune_transaction_based(copied_rules, default_class)        
+        else:
+            pruned_rules = self.prune_range_based(copied_rules, default_class)
+
+        return pruned_rules
     
     def prune_transaction_based(self, rules, default_class):
-        new_rules = [ i for i in rules ]
-        for idx, rule in enumerate(rules):            
+        """Transaction based
+        """
+        
+        new_rules = [ rule for rule in rules ]
+        
+        for idx, rule in enumerate(rules):
+            
             rule_classname, rule_classval = rule.consequent
+            
             if rule_classval != default_class:
                 continue
 
-            cor_cover_antc, cor_cover_consq = self.__dataframe.find_covered_by_rule_mask(rule)
-            cor_cover = cor_cover_antc & cor_cover_consq
+            correctly_covered_antecedent, correctly_covered_consequent = self.__dataframe.find_covered_by_rule_mask(rule)
+            correctly_covered = correctly_covered_antecedent & correctly_covered_consequent
 
             non_empty_intersection = False
             
             for candidate_clash in rules[idx:]:
-                if candidate_clash.consequent[1] == default_class:
+                
+                cand_classname, cand_classval = candidate_clash.consequent
+                
+                if cand_classval == default_class:
                     continue
                     
-                cand_clas_cov_antc, _ = self.__dataframe.find_covered_by_rule_mask(candidate_clash)
-
-                if any(cand_clas_cov_antc & cor_cover):
+                cand_clash_covered_antecedent, cand_clash_covered_consequent = self.__dataframe.find_covered_by_rule_mask(candidate_clash)
+                
+                
+                if any(cand_clash_covered_antecedent & correctly_covered):
                     non_empty_intersection = True
                     break
                     
-            new_rules.remove(rule) if non_empty_intersection == False else 0
+            if non_empty_intersection == False:
+                new_rules.remove(rule)
+                
+            
+        return new_rules
+        
+    
+    
+    
+
+    
+    def prune_range_based(self, rules, default_class):
+        
+        """Transaction based
+        """
+        
+        new_rules = [ rule for rule in rules ]
+        
+        for idx, rule in enumerate(rules):
+            
+            rule_classname, rule_classval = rule.consequent
+            
+            if rule_classval != default_class:
+                continue
+                            
+            literals = dict(rule.antecedent)
+            attributes = literals.keys()
+
+            clashing_rule_found = False
+            
+            """
+            correctly_covered_antecedent, correctly_covered_consequent = self.__dataframe.find_covered_by_rule_mask(rule)
+            correctly_covered = correctly_covered_antecedent & correctly_covered_consequent
+            """
+            non_empty_intersection = False
+            
+            
+            for candidate_clash in rules[idx:]:
+                
+                cand_classname, cand_classval = candidate_clash.consequent
+                
+                if cand_classval == default_class:
+                    continue
+                    
+                attributes_candclash = dict(candidate_clash.antecedent).keys()
+                shared_attributes = set(attributes) & set(attributes_candclash)
+                
+                if not shared_attributes:
+                    clashing_rule_found = True
+                    break
+                    
+                clash_cand_antecedent_dict = dict(candidate_clash.antecedent)
+                literals_in_clash_shared_att = [ (key, clash_cand_antecedent_dict[key]) for key in shared_attributes  ]
+                
+                at_least_one_attribute_disjunct = False
+                
+                for literal in literals_in_clash_shared_att:
+                    attribute, interval = literal
+                    
+                    temp_literal = attribute, literals[attribute]
+
+                    if not interval.overlaps_with(temp_literal[1]):
+                        at_least_one_attribute_disjunct = True
+                        break
+
+                    
+                if at_least_one_attribute_disjunct == False:
+                    clashing_rule_found == True
+                    
+                    
+                    
+            if clashing_rule_found == False:
+                new_rules.remove(rule)
+                
             
         return new_rules

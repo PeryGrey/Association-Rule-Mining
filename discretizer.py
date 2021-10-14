@@ -19,7 +19,7 @@ ar6 = ['V1']
 ar7 = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
        'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
 X_disc = transformer.fit_transform(X, y)
-
+# print(X_disc)
 
 b = pd.DataFrame(data=X_disc, columns=ar7)
 b.to_csv('datasets/discretized-pima.csv')

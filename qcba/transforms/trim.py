@@ -6,17 +6,18 @@ from ..data_structures import QuantitativeDataFrame, Interval, QuantitativeCAR
 
 class Trim:
     def __init__(self, quantitative_dataframe):
-        self.__df = quantitative_dataframe
+        self.__dataframe = quantitative_dataframe
 
     def transform(self, rules):
         r = [ rule.copy() for rule in rules  ]
         return [ self.__trim(rule) for rule in r ]
 
     def __trim(self, rule):           
-        antecedent_mask, consequent_mask = self.__df.find_covered_by_rule_mask(rule)
+        antecedent_mask, consequent_mask = self.__dataframe.find_covered_by_rule_mask(rule)
         covered_by_rule_mask = antecedent_mask & consequent_mask
         
-        covered_by_r = self.__df.mask(covered_by_rule_mask)
+        # instances covered by rule
+        covered_by_r = self.__dataframe.mask(covered_by_rule_mask)
         
         antecedent = rule.antecedent
 

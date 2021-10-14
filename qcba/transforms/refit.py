@@ -16,6 +16,7 @@ class Refit:
     def __refit(self, rule):
         for idx, literal in enumerate(rule.antecedent):
             attribute, interval = literal
+
             if type(interval) != str:
                 current_attribute_values = self.__dataframe.column(attribute)
                 refitted_interval = interval.refit(current_attribute_values)
