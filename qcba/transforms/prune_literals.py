@@ -34,8 +34,7 @@ class PruneLiterals:
 
         while True:
             for pos in range(len(literals)):
-                literals_combination = literals[0:pos] + literals[pos+1:len(literals)]
-                
+                literals_combination = literals[0:pos] + literals[pos+1:len(literals)]                
                 c_rule = rule.copy()
                 c_rule.antecedent = literals_combination
                 c_rule.update_properties(self.__dataframe)

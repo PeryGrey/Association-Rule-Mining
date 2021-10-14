@@ -1,57 +1,24 @@
 import pandas
 import numpy as np
 import math
+from tqdm import tqdm
 
 from ..data_structures import QuantitativeDataFrame, Interval
 
 class Extend:
     
     def __init__(self, dataframe):
-    
-        if type(dataframe) != QuantitativeDataFrame:
-            raise Exception(
-                "type of dataset must be pandas.DataFrame"
-            )
-            
-        self.__dataframe = dataframe
-        
-        
+        self.__dataframe = dataframe   
         
     def transform(self, rules):
         
         copied_rules = [ rule.copy() for rule in rules ]
 
-        progress_bar_len = 50
-        copied_rules_len = len(copied_rules)
-        progress_bar = "#" * progress_bar_len
-        progress_bar_empty = " " * progress_bar_len
-        last_progress_bar_idx = -1
-
         extended_rules = []
-
-        #print("len: ", copied_rules_len)
-
-        for i, rule in enumerate(copied_rules):
-            current_progress_bar_idx = math.floor(i / copied_rules_len * progress_bar_len)
-            
-            if last_progress_bar_idx != current_progress_bar_idx:
-                last_progress_bar_idx = current_progress_bar_idx
-                
-                progress_string = "[" + progress_bar[:last_progress_bar_idx] + progress_bar_empty[last_progress_bar_idx:] + "]"
-                
-                print(*progress_string, sep="")
-
-            extended_rules.append(self.__extend(rule))
-        
+        for i in tqdm(rules):
+            extended_rules.append(self.__extend_rule(i))
         return extended_rules
-    
-    
-    
-    def __extend(self, rule):
-        ext = self.__extend_rule(rule)
-        
-        return ext
-        
+
     def __extend_rule(self, rule, min_improvement=0, min_conditional_improvement=-0.01):
         
         # check improvemnt argument ranges
