@@ -6,10 +6,10 @@ import numpy as np
 from sklearn.utils import shuffle
 import evaluate as Evaluate
 
-path = 'pima'
+path = 'iris'
 
-data_train = pd.read_csv(f"datasets/discretized-{path}.csv")
-data_test = pd.read_csv(f"datasets/discretized-{path}.csv")
+data_train = pd.read_csv(f"datasets/cba-datasets/discretized-{path}.csv")
+data_test = pd.read_csv(f"datasets/cba-datasets/discretized-{path}.csv")
 data_train = shuffle(data_train)
 data_test = shuffle(data_test)
 

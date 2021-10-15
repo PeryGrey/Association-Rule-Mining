@@ -21,11 +21,12 @@ interval_reader.compile_reader()
 
 QuantitativeCAR.interval_reader = interval_reader
 
-path = 'balance-scale'
+path = 'iris'
 
-data_train_discretized = pd.read_csv(f"qcba_datasets/binned-{path}.csv")
-data_train_undiscretized = pd.read_csv(f"qcba_datasets/{path}.csv")
-data_test = pd.read_csv(f"qcba_datasets/binned-{path}.csv")
+data_train_discretized = pd.read_csv(
+    f"datasets/qcba-datasets/binned-{path}.csv")
+data_train_undiscretized = pd.read_csv(f"datasets/qcba-datasets/{path}.csv")
+data_test = pd.read_csv(f"datasets/qcba-datasets/binned-{path}.csv")
 
 txns_train = TransactionDB.from_DataFrame(data_train_discretized)
 txns_test = TransactionDB.from_DataFrame(data_test)
