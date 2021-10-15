@@ -1,23 +1,23 @@
-from .data_structures import QuantitativeDataFrame
 from sklearn.metrics import accuracy_score
+from .quant_rule import QuantitativeDataFrame
+
 
 class QuantitativeClassifier:
-    
+
     def __init__(self, rules, default_class):
         self.rules = rules
         self.default_class = default_class
-        
-        
+
     def rule_model_accuracy(self, df, actual):
         return accuracy_score(self.predict(df), actual)
 
     def predict(self, df):
         pred = []
-    
+
         for _, row in df.dataframe.iterrows():
             found_rule = False
             for rule in self.rules:
-                antc_dic = dict(rule.antecedent)  
+                antc_dic = dict(rule.antecedent)
                 counter = True
 
                 for name, value in row.iteritems():
@@ -35,10 +35,7 @@ class QuantitativeClassifier:
                     pred.append(pred_class)
                     found_rule = True
                     break
-                    
+
             if not found_rule:
                 pred.append(self.default_class)
-        return pred            
-
-
-
+        return pred

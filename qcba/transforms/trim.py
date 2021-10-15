@@ -1,7 +1,7 @@
 import pandas
 import numpy as np
-
-from ..data_structures import QuantitativeDataFrame, Interval, QuantitativeCAR
+from ..quant_rule import QuantitativeDataFrame, QuantitativeCAR
+from ..interval_reader import Interval
 
 
 class Trim:
@@ -9,24 +9,25 @@ class Trim:
         self.__dataframe = quantitative_dataframe
 
     def transform(self, rules):
-        r = [ rule.copy() for rule in rules  ]
-        return [ self.__trim(rule) for rule in r ]
+        r = [rule.copy() for rule in rules]
+        return [self.__trim(rule) for rule in r]
 
-    def __trim(self, rule):           
-        antecedent_mask, consequent_mask = self.__dataframe.find_covered_by_rule_mask(rule)
+    def __trim(self, rule):
+        antecedent_mask, consequent_mask = self.__dataframe.find_covered_by_rule_mask(
+            rule)
         covered_by_rule_mask = antecedent_mask & consequent_mask
-        
+
         # instances covered by rule
         covered_by_r = self.__dataframe.mask(covered_by_rule_mask)
-        
+
         antecedent = rule.antecedent
 
         for idx, literal in enumerate(antecedent):
             attribute, interval = literal
             if type(interval) == str:
                 continue
-            
-            current_column = covered_by_r[[attribute]].values       
+
+            current_column = covered_by_r[[attribute]].values
             if not np.unique(current_column).any():
                 continue
 
@@ -37,5 +38,3 @@ class Trim:
             antecedent[idx] = attribute, new_interval
 
         return rule
-    
-    

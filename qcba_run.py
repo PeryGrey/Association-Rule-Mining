@@ -1,12 +1,9 @@
 from cba import ClassificationBasedAssociation
 from models import TransactionDB
-from qcba.data_structures import QuantitativeDataFrame
 import pandas as pd
 from qcba import QCBA
 from sklearn.utils import shuffle
-
-
-from qcba.data_structures import (
+from qcba import (
     IntervalReader,
     Interval,
     QuantitativeDataFrame,
@@ -24,16 +21,11 @@ interval_reader.compile_reader()
 
 QuantitativeCAR.interval_reader = interval_reader
 
-path = 'tic-tac-toe-endgame'
+path = 'balance-scale'
 
 data_train_discretized = pd.read_csv(f"qcba_datasets/binned-{path}.csv")
 data_train_undiscretized = pd.read_csv(f"qcba_datasets/{path}.csv")
 data_test = pd.read_csv(f"qcba_datasets/binned-{path}.csv")
-
-# data_train_discretized = shuffle(data_train_discretized)
-# data_train_undiscretized = shuffle(data_train_undiscretized)
-# data_test = shuffle(data_test)
-
 
 txns_train = TransactionDB.from_DataFrame(data_train_discretized)
 txns_test = TransactionDB.from_DataFrame(data_test)
@@ -58,5 +50,6 @@ qcba_stages = {
 
 qcba_cba.fit(qcba_stages)
 
+print("-"*50)
 print("CBA accuracy:", cba.rule_model_accuracy(txns_train))
 print("QCBA accuracy:", qcba_cba.score(quant_dataframe_train_undisc))

@@ -1,6 +1,7 @@
 from functools import reduce
 from .comparable_itemset import ComparableItemSet
 
+
 class Antecedent(ComparableItemSet):
     """Antecedent represents a left-hand side of the association rule.
     It is a set of conditions (Items) a Transaction has to satisfy.
@@ -21,7 +22,7 @@ class Antecedent(ComparableItemSet):
         satisfies antecedent
 
     """
-    
+
     def __init__(self, items):
 
         # extract unique attributes and convert them to dict
@@ -31,8 +32,7 @@ class Antecedent(ComparableItemSet):
         # this part is important for better performance
         # of M1 and M2 algoritms
         self.frozenset = frozenset(self)
-        
-    
+
     def __getattr__(self, attr_name):
         """
         Parameters
@@ -45,18 +45,17 @@ class Antecedent(ComparableItemSet):
         Attribute of given name, otherwise an AttributeError
         """
         item = self.itemset.get(attr_name, None)
-        
+
         if (item):
             return item
         else:
             raise AttributeError("No attribute of that name")
-            
-    
+
     def __getitem__(self, idx):
         """Method which allows indexing on antecedent's itemset
         """
         items = list(self.itemset.items())
-        
+
         if (idx <= len(items)):
             return items[idx]
         else:
@@ -69,21 +68,21 @@ class Antecedent(ComparableItemSet):
         length of the itemset
         """
         return len(self.itemset)
-            
+
     def __repr__(self):
         str_array = [repr((attr, val)) for attr, val in self.itemset.items()]
         text = ", ".join(str_array)
         return "Antecedent({})".format(text)
-    
+
     def __hash__(self):
         return hash(tuple(self.itemset.items()))
-    
+
     def __eq__(self, other):
         return hash(self) == hash(other)
 
     def string(self):
         items = list(self.itemset.items())
-        string_items = [ "{}={}".format(key, val) for key, val in items ]
+        string_items = ["{}={}".format(key, val) for key, val in items]
 
         string_ant = ",".join(string_items)
 

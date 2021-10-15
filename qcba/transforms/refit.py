@@ -1,18 +1,18 @@
 import pandas
 import numpy as np
-
-from ..data_structures import QuantitativeDataFrame, Interval
+from ..quant_rule import QuantitativeDataFrame
+from ..interval_reader import Interval
 
 
 class Refit:
     def __init__(self, dataframe):
         self.__dataframe = dataframe
-        
+
     def transform(self, rules):
         r = [rule.copy() for rule in rules]
         refitted = [self.__refit(rule) for rule in r]
         return refitted
-        
+
     def __refit(self, rule):
         for idx, literal in enumerate(rule.antecedent):
             attribute, interval = literal
@@ -23,4 +23,3 @@ class Refit:
                 rule.antecedent[idx] = attribute, refitted_interval
 
         return rule
-            

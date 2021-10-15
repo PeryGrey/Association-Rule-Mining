@@ -72,6 +72,7 @@ class ClassAssocationRule:
             self.rulelen,
             self.rid,
         ]
-        text = "CAR {} => {} sup: {:.2f} conf: {:.2f} len: {}, id: {}".format(*args)
+        text = "CAR {} => {} sup: {:.2f} conf: {:.2f} len: {}, id: {}".format(
+            *args)
 
         return text

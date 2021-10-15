@@ -11,12 +11,12 @@ class Transaction(ComparableItemSet):
 
     Parameters
     ----------
-    
+
     row: array of ints or strings
 
     header: array of strings
         Represents column labels.
-    
+
     class_item: Item
         Item with class attribute.
 
