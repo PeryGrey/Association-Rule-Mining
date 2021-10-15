@@ -1,5 +1,5 @@
 from sklearn.metrics import accuracy_score
-from .quant_rule import QuantitativeDataFrame
+from .qcba_rules import QuantitativeDataFrame
 
 
 class QuantitativeClassifier:

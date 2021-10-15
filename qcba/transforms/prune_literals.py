@@ -1,7 +1,7 @@
 import pandas
 import numpy as np
-from ..quant_rule import QuantitativeDataFrame
-from ..interval_reader import Interval
+from ..qcba_rules import QuantitativeDataFrame
+from ..range_iterator import Range
 
 
 class PruneLiterals:

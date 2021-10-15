@@ -32,7 +32,7 @@ def lesserthan(a, b, inclusivity):
     return False
 
 
-class Interval:
+class Range:
 
     def __init__(self, minval, maxval, left_inclusive, right_inclusive):
         self.minval = minval
@@ -55,8 +55,6 @@ class Interval:
         return hash(self) == hash(other)
 
     def refit(self, vals):
-        """refit values to a finer grid
-        """
         values = np.array(vals)
 
         mask = self.test_membership(values)
@@ -66,7 +64,7 @@ class Interval:
         else:
             left, right = min(new_array), max(new_array)
 
-        return Interval(left, right, True, True)
+        return Range(left, right, True, True)
 
     def test_membership(self, value):
         return self.__membership_func(value)
@@ -81,31 +79,20 @@ class Interval:
         return "{}{};{}{}".format(self.left_bracket, self.minval, self.maxval, self.right_bracket)
 
     def __repr__(self):
-        return "Interval[{}{};{}{}]".format(self.left_bracket, self.minval, self.maxval, self.right_bracket)
+        return "Range[{}{};{}{}]".format(self.left_bracket, self.minval, self.maxval, self.right_bracket)
 
 
-class IntervalReader():
+class RangeIterator():
 
     interval_regex = re.compile(
         "(<|\()(\d+(?:\.(?:\d)+)?);(\d+(?:\.(?:\d)+)?)(\)|>)")
 
     def __init__(self):
-        # opened interval brackets
         self.__open_bracket = "(", ")"
-
-        # closed interval brackets
         self.__closed_bracket = "<", ">"
-
-        # negative and positive infinity symbol,
-        # e.g. -inf, +inf
         self.__infinity_symbol = "-inf", "+inf"
-
-        # decimal separator, e.g. ".", ","
         self.__decimal_separator = "."
-
-        # interval members separator
         self.__members_separator = ";"
-
         self.compile_reader()
 
     def compile_reader(self):
@@ -116,29 +103,21 @@ class IntervalReader():
         right_bracket_open = re.escape(self.open_bracket[1])
         right_braket_closed = re.escape(self.closed_bracket[1])
 
-        # e.g. (   <    |   \(    )
-        #      (   {}   |   {}    )
         left_bracket_regex_string = "({}|{})".format(
             left_bracket_open,
             left_bracket_closed
         )
 
-        # e.g. (   >   |   \)    )
-        #      (   {}   |   {}    )
         right_bracket_regex_string = "({}|{})".format(
             right_bracket_open,
             right_braket_closed
         )
 
-        # ((   \d+  (?:  \.   (?:\d)+  )?   )|-inf)
-        # (   \d+  (?:  {}   (?:\d)+  )?   )
         left_number_regex_string = "(\-?\d+(?:{}(?:\d)+)?|{})".format(
             re.escape(self.decimal_separator),
             re.escape(self.infinity_symbol[0]),
         )
 
-        # ((   \d+  (?:  \.   (?:\d)+  )?   )|+inf)
-        # (   \d+  (?:  {}   (?:\d)+  )?   )
         right_number_regex_string = "(\-?\d+(?:{}(?:\d)+)?|{})".format(
             re.escape(self.decimal_separator),
             re.escape(self.infinity_symbol[1]),
@@ -159,7 +138,6 @@ class IntervalReader():
         self.__interval_regex = re.compile(interval_regex_string)
 
     def read(self, interval_string):
-        # returns array of results, take first member
         args = self.__interval_regex.findall(interval_string)[0]
 
         left_bracket, minval, maxval, right_bracket = args
@@ -172,16 +150,14 @@ class IntervalReader():
         maxval_final = float(
             maxval) if maxval != self.infinity_symbol[1] else np.PINF
 
-        interval = Interval(
+        range_obtained = Range(
             minval_final,
             maxval_final,
             left_inclusive,
             right_inclusive
         )
 
-        return interval
-
-    # boilerplate getter/setter code
+        return range_obtained
 
     @property
     def open_bracket(self):
@@ -229,8 +205,8 @@ class IntervalReader():
         return self
 
 
-interval_reader = IntervalReader()
+range_iterator = RangeIterator()
 
-interval_reader.compile_reader()
+range_iterator.compile_reader()
 
-interval_reader.read("<1.2;2.3>")
+range_iterator.read("<1.2;2.3>")

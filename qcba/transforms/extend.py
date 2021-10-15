@@ -3,15 +3,8 @@ import numpy as np
 import math
 from tqdm import tqdm
 
-# from ..models import QuantitativeDataFrame, Interval
-from ..quant_rule import QuantitativeDataFrame
-from ..interval_reader import Interval
-# from qcba import (
-#     IntervalReader,
-#     Interval,
-#     QuantitativeDataFrame,
-#     QuantitativeCAR,
-# )
+from ..qcba_rules import QuantitativeDataFrame
+from ..range_iterator import Range
 
 
 class Extend:
@@ -123,13 +116,13 @@ class Extend:
 
         if not first_index_modified < 0:
             new_left_bound = vals[first_index_modified]
-            temp_interval = Interval(
+            temp_interval = Range(
                 new_left_bound, interval.maxval,  True, interval.right_inclusive)
             extensions.append((attribute, temp_interval))
 
         if not last_index_modified > len(vals) - 1:
             new_right_bound = vals[last_index_modified]
-            temp_interval = Interval(
+            temp_interval = Range(
                 interval.minval, new_right_bound, interval.left_inclusive, True)
             extensions.append((attribute, temp_interval))
 

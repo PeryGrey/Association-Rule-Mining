@@ -1,7 +1,6 @@
-# from .models import QuantitativeCAR
 from .transformation import QCBATransformation
 from .classifier import QuantitativeClassifier
-from .quant_rule import QuantitativeCAR
+from .qcba_rules import QuantitativeCAR
 
 
 class QCBA:

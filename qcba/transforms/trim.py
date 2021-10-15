@@ -1,7 +1,7 @@
 import pandas
 import numpy as np
-from ..quant_rule import QuantitativeDataFrame, QuantitativeCAR
-from ..interval_reader import Interval
+from ..qcba_rules import QuantitativeDataFrame, QuantitativeCAR
+from ..range_iterator import Range
 
 
 class Trim:
@@ -34,7 +34,7 @@ class Trim:
             minv = min(current_column)[0]
             maxv = max(current_column)[0]
 
-            new_interval = Interval(minv, maxv, True, True)
+            new_interval = Range(minv, maxv, True, True)
             antecedent[idx] = attribute, new_interval
 
         return rule

@@ -4,22 +4,22 @@ import pandas as pd
 from qcba import QCBA
 from sklearn.utils import shuffle
 from qcba import (
-    IntervalReader,
-    Interval,
+    RangeIterator,
+    Range,
     QuantitativeDataFrame,
     QuantitativeCAR,
 )
 
-interval_reader = IntervalReader()
+range_iterator = RangeIterator()
 
-interval_reader.closed_bracket = "", "NULL"
-interval_reader.open_bracket = "NULL", ""
-interval_reader.infinity_symbol = "inf", "inf"
-interval_reader.members_separator = "_to_"
+range_iterator.closed_bracket = "", "NULL"
+range_iterator.open_bracket = "NULL", ""
+range_iterator.infinity_symbol = "inf", "inf"
+range_iterator.members_separator = "_to_"
 
-interval_reader.compile_reader()
+range_iterator.compile_reader()
 
-QuantitativeCAR.interval_reader = interval_reader
+QuantitativeCAR.range_iterator = range_iterator
 
 path = 'iris'
 
