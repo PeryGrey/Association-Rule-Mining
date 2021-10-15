@@ -38,17 +38,12 @@ class QCBATransformation:
     def transform(self, rules, stages={}):
         rules = rules
         rules = self.__refit(rules) if stages['refitting'] else rules
-        rules = self.__prune_literals(
-            rules) if stages['literal_pruning'] else rules
+        rules = self.__prune_literals(rules) if stages['literal_pruning'] else rules
         rules = self.__trim(rules) if stages['trimming'] else rules
         rules = self.__extend(rules) if stages['extension'] else rules
 
         print("5) Doing post pruning")
         rules, default_class = self.post_pruner.transform(rules)
-
-        if stages.get("overlap_pruning", False):
-            print("6) Doing overlap pruning")
-            rules = self.overlap_pruner.transform(rules, default_class,
-                                                  transaction_based=stages["based_drop"])
-
+        print("6) Doing overlap pruning")
+        rules = self.overlap_pruner.transform(rules, default_class, transaction_based=stages["based_drop"])
         return rules, default_class

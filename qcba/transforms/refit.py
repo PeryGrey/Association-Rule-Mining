@@ -9,9 +9,7 @@ class Refit:
         self.__dataframe = dataframe
 
     def transform(self, rules):
-        r = [rule.copy() for rule in rules]
-        refitted = [self.__refit(rule) for rule in r]
-        return refitted
+        return [self.__refit(r) for r in rules]
 
     def __refit(self, rule):
         for idx, literal in enumerate(rule.antecedent):
