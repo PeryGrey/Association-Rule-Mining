@@ -11,7 +11,7 @@ class QuantitativeDataFrame:
     def __init__(self, dataframe):
         self.__dataframe = dataframe
         self.__dataframe.iloc[:, -1] = self.__dataframe.iloc[:, -1].astype(str)
-        self.__preprocessed_columns = self.__preprocess_columns(dataframe)
+        self.__preprocessed_columns = self.__preprocess(dataframe)
         self.__cache = Cache()
         self.size = dataframe.index.size
 
@@ -25,28 +25,33 @@ class QuantitativeDataFrame:
     def mask(self, vals):
         return self.__dataframe[vals]
 
-    def find_covered_by_antecedent_mask(self, antecedent):
-        dataset_size = self.__dataframe.index.size
+    def __preprocess(self, df):
+        processed = {}
 
-        cummulated_mask = np.ones(dataset_size).astype(bool)
+        for key, value in df.to_dict(orient="list").items():
+            processed[key] = np.sort(np.unique(value))
+
+        return processed
+
+    def find_covered_by_antecedent_mask(self, antecedent):
+        cummulated_mask = np.ones(self.__dataframe.index.size).astype(bool)
 
         for literal in antecedent:
             attribute, interval = literal
             relevant_column = self.__dataframe[[
-                attribute]].values.reshape(dataset_size)
+                attribute]].values.reshape(self.__dataframe.index.size)
             current_mask = self.get_literal_coverage(literal, relevant_column)
             cummulated_mask &= current_mask
 
         return cummulated_mask
 
     def find_covered_by_rule_mask(self, rule):
-        dataset_size = self.__dataframe.index.size
-        cummulated_mask = np.array([True] * dataset_size)
+        cummulated_mask = np.array([True] * self.__dataframe.index.size)
 
         for literal in rule.antecedent:
             attribute, interval = literal
             relevant_column = self.__dataframe[[
-                attribute]].values.reshape(dataset_size)
+                attribute]].values.reshape(self.__dataframe.index.size)
             current_mask = self.get_literal_coverage(literal, relevant_column)
             cummulated_mask &= current_mask
 
@@ -54,18 +59,17 @@ class QuantitativeDataFrame:
         instances_satisfying_consequent_mask = self.__get_consequent_coverage_mask(
             rule)
         instances_satisfying_consequent_mask = instances_satisfying_consequent_mask.reshape(
-            dataset_size)
+            self.__dataframe.index.size)
 
         return instances_satisfying_antecedent_mask, instances_satisfying_consequent_mask
 
     def get_stats(self, rule):
-        dataset_size = self.__dataframe.index.size
-        cummulated_mask = np.array([True] * dataset_size)
+        cummulated_mask = np.array([True] * self.__dataframe.index.size)
 
         for literal in rule.antecedent:
             attribute, interval = literal
             relevant_column = self.__dataframe[[
-                attribute]].values.reshape(dataset_size)
+                attribute]].values.reshape(self.__dataframe.index.size)
             current_mask = self.get_literal_coverage(literal, relevant_column)
             cummulated_mask &= current_mask
 
@@ -74,7 +78,7 @@ class QuantitativeDataFrame:
         instances_satisfying_consequent_mask = self.__get_consequent_coverage_mask(
             rule)
         instances_satisfying_consequent_mask = instances_satisfying_consequent_mask.reshape(
-            dataset_size)
+            self.__dataframe.index.size)
 
         instances_satisfying_consequent_and_antecedent = self.__dataframe[
             instances_satisfying_consequent_mask & cummulated_mask
@@ -84,7 +88,7 @@ class QuantitativeDataFrame:
         instances_satisfying_consequent_count = self.__dataframe[
             instances_satisfying_consequent_mask].index.size
 
-        support = instances_satisfying_antecedent_count / dataset_size
+        support = instances_satisfying_antecedent_count / self.__dataframe.index.size
 
         confidence = 0
         if instances_satisfying_antecedent_count != 0:
@@ -107,17 +111,12 @@ class QuantitativeDataFrame:
         return mask
 
     def get_literal_coverage(self, literal, values):
-
-        if type(values) != np.ndarray:
-            raise Exception("Type of values must be numpy.ndarray")
-
         mask = []
 
         attribute, interval = literal
 
-        literal_key = "{}={}".format(attribute, interval)
-        if literal_key in self.__cache:
-            mask = self.__cache.get(literal_key)
+        if "{}={}".format(attribute, interval) in self.__cache:
+            mask = self.__cache.get("{}={}".format(attribute, interval))
         else:
             mask = None
 
@@ -126,18 +125,10 @@ class QuantitativeDataFrame:
             else:
                 mask = interval.test_membership(values)
 
-            self.__cache.insert(literal_key, mask)
+            self.__cache.insert("{}={}".format(attribute, interval), mask)
         mask = mask.reshape(values.size)
 
         return mask
-
-    def __preprocess_columns(self, df):
-        processed = {}
-
-        for key, value in df.to_dict(orient="list").items():
-            processed[key] = np.sort(np.unique(value))
-
-        return processed
 
 
 class QuantitativeCAR:

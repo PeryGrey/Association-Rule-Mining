@@ -25,7 +25,7 @@ range_iterator.initialize_reader()
 
 QuantitativeCAR.range_iterator = range_iterator
 
-path = 'heart'
+path = 'iris'
 
 data_train_discretized = pd.read_csv(
     f"datasets/qcba-datasets/binned-{path}.csv")
