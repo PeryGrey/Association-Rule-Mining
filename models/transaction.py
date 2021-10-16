@@ -3,46 +3,9 @@ from .item import Item
 import pandas as pd
 import numpy as np
 
-
+# Models one transaction
 class Transaction(ComparableItemSet):
-    """Transaction represents one instance in a dataset.
-    Transaction is hashed based on its items and class 
-    value. 
-
-    Parameters
-    ----------
-
-    row: array of ints or strings
-
-    header: array of strings
-        Represents column labels.
-
-    class_item: Item
-        Item with class attribute.
-
-    drop_NaN: bool
-        Used for determining whether a an Item
-        with NULL value should be dropped from Transaction
-
-
-    Attributes
-    ----------
-    items: array of Items
-
-    tid: int
-        Transaction ID.
-
-    alreadycovered: bool
-        Used in M2Classifier for determining if the transaction
-        was already covered by some other rule.
-
-    string_items: two dimensional array of strings
-        e.g. [["a:=:1", "b:=:2"]]
-
-
-
-
-    """
+    """Transaction represents one instance in a dataset """
 
     id_ = 0
 
@@ -94,10 +57,5 @@ class Transaction(ComparableItemSet):
 
 
 class UniqueTransaction(Transaction):
-    """Same as Transaction class except for
-    hashing by Transaction id. 
-
-    """
-
     def __hash__(self):
         return hash(self.tid)

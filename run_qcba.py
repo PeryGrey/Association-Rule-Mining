@@ -1,4 +1,4 @@
-from cba import ClassificationBasedAssociation
+from cba import ClassBasedAssoc
 from models import TransactionDB
 import pandas as pd
 from qcba import QCBA
@@ -38,8 +38,9 @@ txns_test = TransactionDB.from_DataFrame(data_test)
 quant_dataframe_train_disc = QuantitativeDataFrame(data_train_discretized)
 quant_dataframe_train_undisc = QuantitativeDataFrame(data_train_undiscretized)
 
-cba = ClassificationBasedAssociation()
-cba.fit(txns_train)
+cba = ClassBasedAssoc()
+cars = cba.generateCARS(txns_train)
+classifier = cba.buildClassifier(cars,txns_train)
 cba.rule_model_accuracy(txns_train)
 
 print("-"*50)

@@ -1,18 +1,30 @@
 import collections
-from rule_algorithm import RuleBuilderAlgorithm
 from models.classifier import Classifier
-
 import time
 import random
+from collections import Counter
+from models import ClassAssocationRule, Antecedent, Consequent
 
 
-class M1Classifier(RuleBuilderAlgorithm):
-    """ M1 Algorithm implementation.
-    """
+class M1Classifier:
+    """M1 Algorithm implementation."""
+
+    def __init__(self, rules, dataset):
+        self.rules = rules
+        self.dataset = dataset
+        self.y = dataset.class_labels
 
     def train(self):
+        self.stepOne()
+        classifier_rules, default_classes, total_errors, class_distribution, classdist_keys = self.stepTwo()
+        clf = self.stepThree(classifier_rules, default_classes, total_errors, class_distribution, classdist_keys)
+        return clf
 
-        # list for storing rules to be used in the classifier
+    def stepOne(self):        
+        self.rules.sort(reverse=True)
+
+
+    def stepTwo(self):
         classifier_rules = []
 
         default_classes = []
@@ -23,11 +35,10 @@ class M1Classifier(RuleBuilderAlgorithm):
         rule_errors = []
 
         total_errors = []
-   
+
         class_distribution = collections.Counter(self.y)
         classdist_keys = list(class_distribution.keys())
 
-        self.rules.sort(reverse=True)
         dataset = set(self.dataset)
         dataset_len = len(dataset)
 
@@ -90,15 +101,18 @@ class M1Classifier(RuleBuilderAlgorithm):
                 default_classes_errors.append(err_counter)
 
                 total_errors.append(err_counter + sum(rule_errors))
+        
+        return classifier_rules, default_classes, total_errors, class_distribution, classdist_keys
 
-        # finding the smallest number of errors
+
+    def stepThree(self, classifier_rules, default_classes, total_errors, class_distribution, classdist_keys):
         print("Total no of rules in M1 before discarding: ", len(classifier_rules))
         if len(total_errors) != 0:
             min_errors = min(total_errors)
 
             # finding the index of rule with smallest number of errors (Threshold for discarding the remaining rules)
             threshold_idx = total_errors.index(min_errors)
-            #discarding all rules after threshold
+            # discarding all rules after threshold
             final_classifier_rules = classifier_rules[: threshold_idx + 1]
             print("No of rules in M1 after discarding: ", len(final_classifier_rules))
             default_class = default_classes[threshold_idx]
@@ -110,16 +124,8 @@ class M1Classifier(RuleBuilderAlgorithm):
             clf.default_class = default_class
             clf.default_class_attribute = classdist_keys[0][0]
 
-        else:
-            clf = Classifier()
-            clf.rules = []
-
-            possible_default_classes = list(class_distribution)
-            random_class_idx = random.randrange(0, len(possible_default_classes))
-            default_class_att, default_class_value = classdist_keys[random_class_idx]
-            clf.default_class = default_class_value
-            clf.default_class_attribute = default_class_att
-
-        self.calculate_default_class_properties(clf)
-
         return clf
+
+        
+
+

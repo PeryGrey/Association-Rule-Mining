@@ -1,6 +1,6 @@
 import collections
 
-
+# Models a CAR
 class ClassAssocationRule:
 
     id = 0
@@ -55,12 +55,6 @@ class ClassAssocationRule:
         return not self > other
 
     def __len__(self):
-        """
-        returns
-        -------
-
-        length of this rule
-        """
         return len(self.antecedent) + len(self.consequent)
 
     def __repr__(self):
