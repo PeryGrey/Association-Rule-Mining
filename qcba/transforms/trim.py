@@ -9,32 +9,31 @@ class Trim:
         self.__dataframe = quantitative_dataframe
 
     def transform(self, rules):
-        r = [rule.copy() for rule in rules]
-        return [self.__trim(rule) for rule in r]
+        return [self.__trim(rule) for rule in rules]
 
     def __trim(self, rule):
-        antecedent_mask, consequent_mask = self.__dataframe.find_covered_by_rule_mask(
+        ant_cover, consq_cover = self.__dataframe.find_covered_by_rule_mask(
             rule)
-        covered_by_rule_mask = antecedent_mask & consequent_mask
+        rule_cover = ant_cover & consq_cover
 
         # instances covered by rule
-        covered_by_r = self.__dataframe.mask(covered_by_rule_mask)
+        rule_mask = self.__dataframe.mask(rule_cover)
+        antc = rule.antecedent
 
-        antecedent = rule.antecedent
-
-        for idx, literal in enumerate(antecedent):
+        for idx, literal in enumerate(antc):
             attribute, interval = literal
-            if type(interval) == str:
-                continue
 
-            current_column = covered_by_r[[attribute]].values
-            if not np.unique(current_column).any():
-                continue
+            # if the literal was originally of numerical type
+            if type(interval) != str:
 
-            minv = min(current_column)[0]
-            maxv = max(current_column)[0]
+                current_column = rule_mask[attribute].values    
+                if len(current_column) == 0:
+                    continue
 
-            new_interval = Range(minv, maxv, True, True)
-            antecedent[idx] = attribute, new_interval
+                minv = min(current_column)
+                maxv = max(current_column)
+
+                new_interval = Range(minv, maxv, True, True)
+                antc[idx] = attribute, new_interval
 
         return rule

@@ -28,7 +28,6 @@ class Extend:
 
         while True:
             extension_succesful = False
-
             direct_extensions = self.__get_extensions(current_best)
 
             for candidate in direct_extensions:
