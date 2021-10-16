@@ -1,5 +1,5 @@
 from .transformation import QCBATransformation
-from .classifier import QuantitativeClassifier
+from .qcba_classifier import QuantitativeClassifier
 from .qcba_rules import QuantitativeCAR
 
 
@@ -12,7 +12,8 @@ class QCBA:
         self.clf = None
 
     def fit(self, stages):
-        transformed_rules, default_class = self.transformation.transform(self.__rules, stages)
+        transformed_rules, default_class = self.transformation.transform(
+            self.__rules, stages)
         self.clf = QuantitativeClassifier(transformed_rules, default_class)
         return self.clf
 

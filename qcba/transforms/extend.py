@@ -108,8 +108,8 @@ class Extend:
         first_index_modified = member_indexes[0] - 1
         last_index_modified = member_indexes[-1] + 1
 
-        new_left_bound = interval.minval
-        new_right_bound = interval.maxval
+        new_left_bound = interval.minimumvalue
+        new_right_bound = interval.maximumvalue
 
         # prepare return values
         extensions = []
@@ -117,13 +117,13 @@ class Extend:
         if not first_index_modified < 0:
             new_left_bound = vals[first_index_modified]
             temp_interval = Range(
-                new_left_bound, interval.maxval,  True, interval.right_inclusive)
+                new_left_bound, interval.maximumvalue,  True, interval.right_boundary)
             extensions.append((attribute, temp_interval))
 
         if not last_index_modified > len(vals) - 1:
             new_right_bound = vals[last_index_modified]
             temp_interval = Range(
-                interval.minval, new_right_bound, interval.left_inclusive, True)
+                interval.minimumvalue, new_right_bound, interval.left_boundary, True)
             extensions.append((attribute, temp_interval))
 
         return extensions

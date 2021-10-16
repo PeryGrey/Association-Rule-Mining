@@ -1,4 +1,3 @@
-
 import numpy as np
 import copy
 import pandas
@@ -59,7 +58,7 @@ class QuantitativeDataFrame:
 
         return instances_satisfying_antecedent_mask, instances_satisfying_consequent_mask
 
-    def calculate_rule_statistics(self, rule):
+    def get_stats(self, rule):
         dataset_size = self.__dataframe.index.size
         cummulated_mask = np.array([True] * dataset_size)
 
@@ -95,18 +94,13 @@ class QuantitativeDataFrame:
         return support, confidence
 
     def __get_consequent_coverage_mask(self, rule):
-        consequent = rule.consequent
-        attribute, value = consequent
-
+        attribute, value = rule.consequent
+        mask = []
         class_column = self.__dataframe[[attribute]].values
         class_column = class_column.astype(str)
 
-        literal_key = "{}={}".format(attribute, value)
-
-        mask = []
-
-        if literal_key in self.__cache:
-            mask = self.__cache.get(literal_key)
+        if "{}={}".format(attribute, value) in self.__cache:
+            mask = self.__cache.get("{}={}".format(attribute, value))
         else:
             mask = class_column == value
 
@@ -137,16 +131,13 @@ class QuantitativeDataFrame:
 
         return mask
 
-    def __preprocess_columns(self, dataframe):
-        dataframe_dict = dataframe.to_dict(orient="list")
+    def __preprocess_columns(self, df):
+        processed = {}
 
-        dataframe_ndarray = {}
+        for key, value in df.to_dict(orient="list").items():
+            processed[key] = np.sort(np.unique(value))
 
-        for column, value_list in dataframe_dict.items():
-            transformed_list = np.sort(np.unique(value_list))
-            dataframe_ndarray[column] = transformed_list
-
-        return dataframe_ndarray
+        return processed
 
 
 class QuantitativeCAR:
@@ -181,14 +172,9 @@ class QuantitativeCAR:
                 interval_antecedent.append((attribute, value))
         return sorted(interval_antecedent)
 
-    def update_properties(self, quant_dataframe):
+    def update_properties(self, df):
 
-        if quant_dataframe.__class__.__name__ != "QuantitativeDataFrame":
-            raise Exception(
-                "type of quant_dataframe must be QuantitativeDataFrame"
-            )
-
-        support, confidence = quant_dataframe.calculate_rule_statistics(self)
+        support, confidence = df.get_stats(self)
 
         self.support = support
         self.confidence = confidence
@@ -206,19 +192,15 @@ class QuantitativeCAR:
         return copied
 
     def __repr__(self):
-        ant = self.antecedent
-
-        ant_string_arr = []
-        for key, val in ant:
+        arr = []
+        for key, val in self.antecedent:
             if type(val) == str:
-                ant_string_arr.append("{}={}".format(key, val))
+                arr.append("{}={}".format(key, val))
             else:
-                ant_string_arr.append("{}={}".format(key, val.string()))
-
-        ant_string = "{" + ",".join(ant_string_arr) + "}"
+                arr.append("{}={}".format(key, val.string()))
 
         args = [
-            ant_string,
+            "{" + ",".join(arr) + "}",
             "{" + self.consequent.string() + "}",
             self.support,
             self.confidence,
@@ -226,10 +208,8 @@ class QuantitativeCAR:
             self.rid
         ]
 
-        text = "CAR {} => {} sup: {:.2f} conf: {:.2f} len: {}, id: {}".format(
+        return "CAR {} => {} sup: {:.2f} conf: {:.2f} len: {}, id: {}".format(
             *args)
-
-        return text
 
     def __gt__(self, other):
         if (self.confidence > other.confidence):
@@ -250,9 +230,6 @@ class QuantitativeCAR:
             return False
 
     def __lt__(self, other):
-        """
-        rule precedence operator
-        """
         return not self > other
 
     def __eq__(self, other):

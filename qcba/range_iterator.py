@@ -1,32 +1,31 @@
 import re
 import numpy as np
 
-
-def make_intervalfunc(minv, maxv, left_inclusivity, right_inclusivity):
-    def inner_func(value):
-        if greaterthan(value, minv, left_inclusivity) and lesserthan(value, maxv, right_inclusivity):
+def form_ranges(minimumvalue, maximumvalue, includeleft, includeright):
+    def temp_func(value_to_compare):
+        if isValueGreater(value_to_compare, minimumvalue, includeleft) and isValueLess(value_to_compare, maximumvalue, includeright):
             return True
         else:
             return False
 
-    return inner_func
+    return temp_func
 
 
-def greaterthan(a, b, inclusivity):
-    if inclusivity:
-        if a >= b:
+def isValueGreater(d, e, boundary):
+    if boundary:
+        if d >= e:
             return True
-    elif a > b:
+    elif d > e:
         return True
 
     return False
 
 
-def lesserthan(a, b, inclusivity):
-    if inclusivity:
-        if a <= b:
+def isValueLess(d, e, boundary):
+    if boundary:
+        if d <= e:
             return True
-    elif a < b:
+    elif d < e:
         return True
 
     return False
@@ -34,18 +33,18 @@ def lesserthan(a, b, inclusivity):
 
 class Range:
 
-    def __init__(self, minval, maxval, left_inclusive, right_inclusive):
-        self.minval = minval
-        self.maxval = maxval
-        self.left_inclusive = left_inclusive
-        self.right_inclusive = right_inclusive
+    def __init__(self, minimumvalue, maximumvalue, left_boundary, right_boundary):
+        self.minimumvalue = minimumvalue
+        self.maximumvalue = maximumvalue
+        self.left_boundary = left_boundary
+        self.right_boundary = right_boundary
 
-        self.left_bracket = "<" if left_inclusive else "("
-        self.right_bracket = ">" if right_inclusive else ")"
+        self.left_bracket = "<" if left_boundary else "("
+        self.right_bracket = ">" if right_boundary else ")"
 
         self.__membership_func = np.vectorize(
-            make_intervalfunc(self.minval, self.maxval,
-                              self.left_inclusive, self.right_inclusive)
+            form_ranges(self.minimumvalue, self.maximumvalue,
+                        self.left_boundary, self.right_boundary)
         )
 
     def __hash__(self):
@@ -55,16 +54,14 @@ class Range:
         return hash(self) == hash(other)
 
     def refit(self, vals):
-        values = np.array(vals)
 
-        mask = self.test_membership(values)
-        new_array = values[mask]
-        if(len(new_array) < 1):
-            left, right = 0, 0
+        processed_list = np.array(vals)[self.test_membership(np.array(vals))]
+        if(len(processed_list) < 1):
+            minimum, maximum = 0, 0
         else:
-            left, right = min(new_array), max(new_array)
+            minimum, maximum = min(processed_list), max(processed_list)
 
-        return Range(left, right, True, True)
+        return Range(minimum, maximum, True, True)
 
     def test_membership(self, value):
         return self.__membership_func(value)
@@ -73,19 +70,16 @@ class Range:
         return self.test_membership([value])[0]
 
     def overlaps_with(self, other):
-        return self.isin(other.minval) or self.isin(other.maxval) or other.isin(self.minval) or other.isin(self.maxval)
+        return self.isin(other.minimumvalue) or self.isin(other.maximumvalue) or other.isin(self.minimumvalue) or other.isin(self.maximumvalue)
 
     def string(self):
-        return "{}{};{}{}".format(self.left_bracket, self.minval, self.maxval, self.right_bracket)
+        return "{}{};{}{}".format(self.left_bracket, self.minimumvalue, self.maximumvalue, self.right_bracket)
 
     def __repr__(self):
-        return "Range[{}{};{}{}]".format(self.left_bracket, self.minval, self.maxval, self.right_bracket)
+        return "Range[{}{};{}{}]".format(self.left_bracket, self.minimumvalue, self.maximumvalue, self.right_bracket)
 
 
 class RangeIterator():
-
-    interval_regex = re.compile(
-        "(<|\()(\d+(?:\.(?:\d)+)?);(\d+(?:\.(?:\d)+)?)(\)|>)")
 
     def __init__(self):
         self.__open_bracket = "(", ")"
@@ -93,71 +87,46 @@ class RangeIterator():
         self.__infinity_symbol = "-inf", "+inf"
         self.__decimal_separator = "."
         self.__members_separator = ";"
-        self.compile_reader()
+        self.initialize_reader()
 
-    def compile_reader(self):
+    def initialize_reader(self):
 
-        left_bracket_open = re.escape(self.open_bracket[0])
-        left_bracket_closed = re.escape(self.closed_bracket[0])
-
-        right_bracket_open = re.escape(self.open_bracket[1])
-        right_braket_closed = re.escape(self.closed_bracket[1])
-
-        left_bracket_regex_string = "({}|{})".format(
-            left_bracket_open,
-            left_bracket_closed
+        regex_range_string = "{}{}{}{}{}".format(
+            "({}|{})".format(
+                re.escape(self.open_bracket[0]),
+                re.escape(self.closed_bracket[0])
+            ),
+            "(\-?\d+(?:{}(?:\d)+)?|{})".format(
+                re.escape(self.decimal_separator),
+                re.escape(self.infinity_symbol[0]),
+            ),
+            "{}".format(
+                re.escape(self.members_separator)
+            ),
+            "(\-?\d+(?:{}(?:\d)+)?|{})".format(
+                re.escape(self.decimal_separator),
+                re.escape(self.infinity_symbol[1]),
+            ),
+            "({}|{})".format(
+                re.escape(self.open_bracket[1]),
+                re.escape(self.closed_bracket[1])
+            )
         )
 
-        right_bracket_regex_string = "({}|{})".format(
-            right_bracket_open,
-            right_braket_closed
-        )
-
-        left_number_regex_string = "(\-?\d+(?:{}(?:\d)+)?|{})".format(
-            re.escape(self.decimal_separator),
-            re.escape(self.infinity_symbol[0]),
-        )
-
-        right_number_regex_string = "(\-?\d+(?:{}(?:\d)+)?|{})".format(
-            re.escape(self.decimal_separator),
-            re.escape(self.infinity_symbol[1]),
-        )
-
-        members_separator_regex = "{}".format(
-            re.escape(self.members_separator)
-        )
-
-        interval_regex_string = "{}{}{}{}{}".format(
-            left_bracket_regex_string,
-            left_number_regex_string,
-            members_separator_regex,
-            right_number_regex_string,
-            right_bracket_regex_string
-        )
-
-        self.__interval_regex = re.compile(interval_regex_string)
+        self.__interval_regex = re.compile(regex_range_string)
 
     def read(self, interval_string):
-        args = self.__interval_regex.findall(interval_string)[0]
+        bracket_left, minimumvalue, maximumvalue, bracket_right = self.__interval_regex.findall(
+            interval_string)[0]
 
-        left_bracket, minval, maxval, right_bracket = args
-
-        left_inclusive = True if left_bracket == self.closed_bracket[0] else False
-        right_inclusive = True if right_bracket == self.closed_bracket[1] else False
-
-        minval_final = float(
-            minval) if minval != self.infinity_symbol[0] else np.NINF
-        maxval_final = float(
-            maxval) if maxval != self.infinity_symbol[1] else np.PINF
-
-        range_obtained = Range(
-            minval_final,
-            maxval_final,
-            left_inclusive,
-            right_inclusive
+        return Range(
+            float(
+                minimumvalue) if minimumvalue != self.infinity_symbol[0] else np.NINF,
+            float(
+                maximumvalue) if maximumvalue != self.infinity_symbol[1] else np.PINF,
+            True if bracket_left == self.closed_bracket[0] else False,
+            True if bracket_right == self.closed_bracket[1] else False
         )
-
-        return range_obtained
 
     @property
     def open_bracket(self):
@@ -203,10 +172,3 @@ class RangeIterator():
     def members_separator(self, val):
         self.__members_separator = val
         return self
-
-
-range_iterator = RangeIterator()
-
-range_iterator.compile_reader()
-
-range_iterator.read("<1.2;2.3>")

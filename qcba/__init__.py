@@ -1,5 +1,5 @@
 
-from .classifier import *
+from .qcba_classifier import *
 from .qcba import *
 from .transformation import *
 from .range_iterator import *

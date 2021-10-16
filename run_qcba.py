@@ -10,18 +10,22 @@ from qcba import (
     QuantitativeCAR,
 )
 
+empty_string = ""
+null_string = "NULL"
+inf_string = "inf"
+
 range_iterator = RangeIterator()
 
-range_iterator.closed_bracket = "", "NULL"
-range_iterator.open_bracket = "NULL", ""
-range_iterator.infinity_symbol = "inf", "inf"
+range_iterator.closed_bracket = empty_string, null_string
+range_iterator.open_bracket = null_string, empty_string
+range_iterator.infinity_symbol = inf_string, inf_string
 range_iterator.members_separator = "_to_"
 
-range_iterator.compile_reader()
+range_iterator.initialize_reader()
 
 QuantitativeCAR.range_iterator = range_iterator
 
-path = 'iris'
+path = 'heart'
 
 data_train_discretized = pd.read_csv(
     f"datasets/qcba-datasets/binned-{path}.csv")

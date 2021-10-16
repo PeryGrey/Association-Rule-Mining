@@ -2,8 +2,8 @@ class Cache:
     def __init__(self):
         self.__cache = {}
 
-    def insert(self, literal, truth_values):
-        self.__cache[literal] = truth_values
+    def insert(self, literal, value):
+        self.__cache[literal] = value
 
     def get(self, literal):
         return self.__cache[literal]
