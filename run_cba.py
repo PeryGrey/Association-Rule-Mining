@@ -20,7 +20,7 @@ split_point.append(len(data_train))
 accuracies = []
 
 for k in range(len(split_point) - 1):
-    print("\nRound %d:" % k)
+    print("\nRound %d:" % (k+1))
     test_dataset = data_test[split_point[k]: split_point[k + 1]]
     train_dataset = data_train[0: split_point[k]].append(
         data_train[split_point[k + 1]:]
@@ -32,8 +32,9 @@ for k in range(len(split_point) - 1):
     cars = cba.generateCARS(txns_train)
     classifier = cba.buildClassifier(cars, txns_train)
     time_end = time.time()
-    print("Time taken: ", time_end - time_start)
+    # print("Time taken: ", time_end - time_start)
     accuracy = Evaluate.evaluate(classifier, txns_test)
+    print("accuracy: ", accuracy)
     accuracies.append(accuracy)
 print("")
 print(accuracies)

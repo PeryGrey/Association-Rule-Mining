@@ -21,7 +21,7 @@ def convertToCARs(rules):  # coverts apriori rules to CARS format
         )  # convert to CAR
         CARs.append(CAR)
 
-    print("CAR example: ", CARs[-1])
+ 
     return CARs
 
 
@@ -44,6 +44,6 @@ def generateARs(
     )
 
     print("No of association rules from apriori: ", len(rules))
-    print("Rule example: ", rules[0])
+    # print("Rule example: ", rules[0])
 
     return rules

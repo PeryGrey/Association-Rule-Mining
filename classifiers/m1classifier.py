@@ -105,7 +105,7 @@ class M1Classifier:
         return classifier_rules, default_classes, total_errors, class_distribution, classdist_keys
 
     def stepThree(self, classifier_rules, default_classes, total_errors, class_distribution, classdist_keys):
-        print("Total no of rules in M1 before discarding: ", len(classifier_rules))
+        print("Rules in M1 before discarding: ", len(classifier_rules))
         if len(total_errors) != 0:
             min_errors = min(total_errors)
 
@@ -113,7 +113,7 @@ class M1Classifier:
             threshold_idx = total_errors.index(min_errors)
             # discarding all rules after threshold
             final_classifier_rules = classifier_rules[: threshold_idx + 1]
-            print("No of rules in M1 after discarding: ",
+            print("Rules in M1 after discarding: ",
                   len(final_classifier_rules))
             default_class = default_classes[threshold_idx]
             print("Default Class: ", default_class)

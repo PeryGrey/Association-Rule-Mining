@@ -126,6 +126,7 @@ class M2Classifier():
                 total_errors_list.append(total_errors)
 
         if len(total_errors_list) != 0:
+            print("Rules in M2 before discarding: ", len(rules_list))
             min_value = min(total_errors_list)
 
             min_indices = [
@@ -137,7 +138,8 @@ class M2Classifier():
 
             final_classifier = [rule for rule in rules_list[: min_idx + 1]]
             default_class = default_classes_list[min_idx]
-
+            print("Rules in M2 after discarding: ", len(final_classifier))
+            
             if not default_class:
                 i = min_idx
                 while not default_class:
@@ -159,24 +161,9 @@ class M2Classifier():
             self.default_class_attribute = default_class_att
 
     def emptyrule(self):
-        """returns rule with empty antecedent
-        and consequent
-        """
         return ClassAssocationRule(Antecedent([]), Consequent(None, None), 0, 0)
 
     def maxcoverrule(self, datacase, rules):
-        """
-        finds the highest precedence rule that covers
-        the case d
-
-
-        Arguments
-        ---------
-        rules: sorted rules
-
-        datacase: instance d
-
-        """
         crule, wrule = None, None
 
         for rule in rules:

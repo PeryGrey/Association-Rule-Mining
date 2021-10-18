@@ -35,12 +35,6 @@ class ClassAssocationRule:
         elif (
             self.confidence == other.confidence
             and self.support == other.support
-            and self.rulelen < other.rulelen
-        ):
-            return True
-        elif (
-            self.confidence == other.confidence
-            and self.support == other.support
             and self.rulelen == other.rulelen
             and self.rid < other.rid
         ):
