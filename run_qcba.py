@@ -36,6 +36,7 @@ empty_string = ""
 null_string = "NULL"
 inf_string = "inf"
 
+# initialize an object to form ranges of the discretized attributes
 range_iterator = RangeIterator()
 
 range_iterator.closed_bracket = empty_string, null_string
@@ -47,19 +48,24 @@ range_iterator.initialize_reader()
 
 QuantitativeCAR.range_iterator = range_iterator
 
+# state the dataset to be used
 path = 'iris'
 
+# read the dataset and its discretized version
 data_train_discretized = pd.read_csv(
     f"datasets/qcba-datasets/binned-{path}.csv")
 data_train_undiscretized = pd.read_csv(f"datasets/qcba-datasets/{path}.csv")
 data_test = pd.read_csv(f"datasets/qcba-datasets/binned-{path}.csv")
 
+# processing for CBA application
 txns_train = TransactionDB.from_DataFrame(data_train_discretized)
 txns_test = TransactionDB.from_DataFrame(data_test)
 
+# processing for QCBA application
 quant_dataframe_train_disc = QuantitativeDataFrame(data_train_discretized)
 quant_dataframe_train_undisc = QuantitativeDataFrame(data_train_undiscretized)
 
+# get the CBA model
 cba = ClassBasedAssoc()
 cars = cba.generateCARS(txns_train)
 classifier = cba.buildClassifier(cars, txns_train)
@@ -67,6 +73,7 @@ cba.rule_model_accuracy(txns_train)
 
 print("-"*50)
 
+# apply the QCBA transformations on the CBA model obtained
 qcba_cba = QCBA(quant_dataframe_train_undisc, cba_rule_model=cba)
 qcba_stages = {
     "refitting": True,
