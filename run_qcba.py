@@ -1,14 +1,36 @@
 from cba import ClassBasedAssoc
 from models import TransactionDB
 import pandas as pd
-from qcba import QCBA
 from sklearn.utils import shuffle
 from qcba import (
     RangeIterator,
     Range,
     QuantitativeDataFrame,
     QuantitativeCAR,
+    QCBATransformation,
+    QuantitativeClassifier
 )
+
+
+class QCBA:
+    def __init__(self, dataset, cba_rule_model=None):
+        self.dataset = dataset
+        self.__rules = [QuantitativeCAR(r)
+                        for r in cba_rule_model.classifier.rules]
+
+        self.transformation = QCBATransformation(dataset)
+        self.clf = None
+
+    def fit(self, stages):
+        transformed_rules, default_class = self.transformation.transform(
+            self.__rules, stages)
+        self.clf = QuantitativeClassifier(transformed_rules, default_class)
+        return self.clf
+
+    def score(self, dataset):
+        actual = dataset.dataframe.iloc[:, -1]
+        return self.clf.rule_model_accuracy(dataset, actual)
+
 
 empty_string = ""
 null_string = "NULL"
@@ -40,7 +62,7 @@ quant_dataframe_train_undisc = QuantitativeDataFrame(data_train_undiscretized)
 
 cba = ClassBasedAssoc()
 cars = cba.generateCARS(txns_train)
-classifier = cba.buildClassifier(cars,txns_train)
+classifier = cba.buildClassifier(cars, txns_train)
 cba.rule_model_accuracy(txns_train)
 
 print("-"*50)

@@ -17,12 +17,12 @@ class M1Classifier:
     def train(self):
         self.stepOne()
         classifier_rules, default_classes, total_errors, class_distribution, classdist_keys = self.stepTwo()
-        clf = self.stepThree(classifier_rules, default_classes, total_errors, class_distribution, classdist_keys)
+        clf = self.stepThree(classifier_rules, default_classes,
+                             total_errors, class_distribution, classdist_keys)
         return clf
 
-    def stepOne(self):        
+    def stepOne(self):
         self.rules.sort(reverse=True)
-
 
     def stepTwo(self):
         classifier_rules = []
@@ -101,9 +101,8 @@ class M1Classifier:
                 default_classes_errors.append(err_counter)
 
                 total_errors.append(err_counter + sum(rule_errors))
-        
-        return classifier_rules, default_classes, total_errors, class_distribution, classdist_keys
 
+        return classifier_rules, default_classes, total_errors, class_distribution, classdist_keys
 
     def stepThree(self, classifier_rules, default_classes, total_errors, class_distribution, classdist_keys):
         print("Total no of rules in M1 before discarding: ", len(classifier_rules))
@@ -114,9 +113,10 @@ class M1Classifier:
             threshold_idx = total_errors.index(min_errors)
             # discarding all rules after threshold
             final_classifier_rules = classifier_rules[: threshold_idx + 1]
-            print("No of rules in M1 after discarding: ", len(final_classifier_rules))
+            print("No of rules in M1 after discarding: ",
+                  len(final_classifier_rules))
             default_class = default_classes[threshold_idx]
-            print("default_class: ", default_class)
+            print("Default Class: ", default_class)
 
             # creating the final classifier
             clf = Classifier()
@@ -125,7 +125,3 @@ class M1Classifier:
             clf.default_class_attribute = classdist_keys[0][0]
 
         return clf
-
-        
-
-
