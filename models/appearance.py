@@ -1,20 +1,6 @@
 class Appearance:
     """Appearance represents an easy way to get an appearance 
-    dictionary for functions from fim package.
-
-
-    Attributes
-    ----------
-    self.lhs: array of (string, string)
-
-    self.rhs: array of (string, string)
-
-    frozenset: frozenset of Items
-        this attribute is vital for determining if antecedent
-        is a subset of transaction and, consequently, if transaction
-        satisfies antecedent
-
-    """
+    dictionary for functions from fim package. """
     
     def __init__(self):
         self.lhs = []

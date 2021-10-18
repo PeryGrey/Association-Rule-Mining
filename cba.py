@@ -19,18 +19,18 @@ class ClassBasedAssoc:
             self.classification_algorithm,
         )
         self.maxlen = maxlen
-        self.clf = None
+    
         self.classifier = None
         self.target_class = None
         self.available_algorithms = {"m1": M1Classifier, "m2": M2Classifier}
 
     def rule_model_accuracy(self, txns):
-        if not self.clf:
+        if not self.classifier:
             raise Exception("CBA must be trained using fit method first")
         if not isinstance(txns, TransactionDB):
             raise Exception("txns must be of type TransactionDB")
 
-        return self.clf.test_transactions(txns)
+        return self.classifier.test_transactions(txns)
 
     def generateCARS(self, transactions):
         assoc_rules = None

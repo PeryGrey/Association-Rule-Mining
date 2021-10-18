@@ -3,25 +3,7 @@ from .comparable_itemset import ComparableItemSet
 
 
 class Antecedent(ComparableItemSet):
-    """Antecedent represents a left-hand side of the association rule.
-    It is a set of conditions (Items) a Transaction has to satisfy.
-
-    Parameters
-    ----------
-    items: 1D array of Items
-
-
-    Attributes
-    ----------
-    itemset: 1D array of Items
-        dictionary of unique attributes, such as: {a: 1, b: 3}
-
-    frozenset: frozenset of Items
-        this attribute is vital for determining if antecedent
-        is a subset of transaction and, consequently, if transaction
-        satisfies antecedent
-
-    """
+    """ left-hand side of the association rule"""
 
     def __init__(self, items):
 
@@ -34,16 +16,7 @@ class Antecedent(ComparableItemSet):
         self.frozenset = frozenset(self)
 
     def __getattr__(self, attr_name):
-        """
-        Parameters
-        ----------
-        attribute: str
-            name of desired attribute
 
-        Returns
-        -------
-        Attribute of given name, otherwise an AttributeError
-        """
         item = self.itemset.get(attr_name, None)
 
         if (item):
@@ -52,8 +25,7 @@ class Antecedent(ComparableItemSet):
             raise AttributeError("No attribute of that name")
 
     def __getitem__(self, idx):
-        """Method which allows indexing on antecedent's itemset
-        """
+
         items = list(self.itemset.items())
 
         if (idx <= len(items)):
@@ -62,11 +34,6 @@ class Antecedent(ComparableItemSet):
             raise IndexError("No value at the specified index")
 
     def __len__(self):
-        """
-        Returns
-        -------
-        length of the itemset
-        """
         return len(self.itemset)
 
     def __repr__(self):

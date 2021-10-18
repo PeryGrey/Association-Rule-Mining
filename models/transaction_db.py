@@ -2,7 +2,7 @@ from .appearance import Appearance
 from .transaction import Transaction, UniqueTransaction
 from . import Item
 
-
+# Models a database of transactions
 class TransactionDB:
     def __init__(self, dataset, header, unique_transactions=True, drop_NaN=True):
 
@@ -35,13 +35,6 @@ class TransactionDB:
 
     @property
     def appeardict(self):
-        """
-        Returns
-        -------
-        an appearance dictionary to be used in the fim
-        package. Assumes user wants to generate class association
-        rules.
-        """
         appear = Appearance()
 
         unique_class_items = set(self.class_labels)
@@ -53,13 +46,6 @@ class TransactionDB:
 
     @property
     def appeardict_itemsets_only(self):
-        """
-        Returns
-        -------
-        an appearance dictionary to be used in the fim
-        package. Assumes user wants to generate frequent itemsets
-        only, not class assocation rules
-        """
         appear = Appearance()
 
         return appear.dictionary
@@ -72,27 +58,8 @@ class TransactionDB:
         clazz, df, unique_transactions=False, drop_NaN=True, target=None
     ):
         """
-        Allows the conversion of pandas DataFrame class to
-        TransactionDB class.
-
-        Parameters
-        ----------
-
-        df: pandas DataFrame
-            A DataFrame from which to create a TransactionDB.
-
-        unique_transactions: bool
-            Determines if UniqueTransaction or Transaction class
-            should be used for individual instances.
-
-        drop_NaN: bool
-            Used for determining whether a an Item
-            with NULL value should be dropped from Transaction.
-
-        target: str, default None
-            Name of an existing column in df. This column will
-            be taken as a class target.
-        """
+        Connversion of pandas DataFrame class to
+        TransactionDB class. """
 
         if target is not None:
             if type(target) != str:

@@ -6,7 +6,7 @@ from .qcba_rules import QuantitativeCAR
 class QCBA:
     def __init__(self, dataset, cba_rule_model=None):
         self.dataset = dataset
-        self.__rules = [QuantitativeCAR(r) for r in cba_rule_model.clf.rules]
+        self.__rules = [QuantitativeCAR(r) for r in cba_rule_model.classifier.rules]
 
         self.transformation = QCBATransformation(dataset)
         self.clf = None

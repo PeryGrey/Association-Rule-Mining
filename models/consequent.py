@@ -1,6 +1,7 @@
 from .comparable_itemset import ComparableItemSet
 from .item import Item
 
+# Models a consequent
 class Consequent(Item, ComparableItemSet):
     """
     Represents a right-hand side of the association rule.

@@ -3,7 +3,7 @@ from functools import reduce
 
 from models import ClassAssocationRule, Antecedent, Consequent, TransactionDB
 
-
+# Models a classifier
 class Classifier:
     def __init__(self):
         self.rules = []
