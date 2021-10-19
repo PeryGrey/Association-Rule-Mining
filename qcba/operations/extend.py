@@ -28,14 +28,18 @@ class Extend:
 
         while True:
             extension_succesful = False
+
+            # Get the candidates after extending the rules
             direct_extensions = self.__get_extensions(current_best)
 
             for candidate in direct_extensions:
                 candidate.update_properties(self.__dataframe)
 
+                # checks for the improvement
                 delta_confidence = candidate.confidence - current_best.confidence
                 delta_support = candidate.support - current_best.support
 
+                # if the confidence is above min_improvement and the rule have increased in support
                 if delta_confidence >= min_improvement and delta_support > 0:
                     current_best = candidate
                     extension_succesful = True
@@ -45,6 +49,8 @@ class Extend:
                     enlargement = candidate
 
                     while True:
+                        # if the cand rule does not have enough support, it tries to extend the literal as much as possible 
+                        # until there is no possibility of any extension.
                         enlargement = self.get_beam_extensions(enlargement)
 
                         if enlargement is None:
@@ -127,7 +133,6 @@ class Extend:
 
         return extensions
 
-    # make private
     def get_beam_extensions(self, rule):
         if not rule.was_extended:
             print(rule.was_extended)

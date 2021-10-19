@@ -26,6 +26,7 @@ class Trim:
             # if the literal was originally of numerical type
             if type(interval) != str:
 
+                # finds the instances belonging to the attribute i.e. the literal
                 current_column = rule_mask[attribute].values    
                 if len(current_column) == 0:
                     continue

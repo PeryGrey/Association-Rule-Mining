@@ -52,9 +52,11 @@ class PostPrune:
                 rule)
             correctly_covered = covered_antecedent & covered_consequent
 
+            # removes any rule that do no cover any instances
             if not any(correctly_covered):
                 rules.remove(rule)
             else:
+                #Calculates the defacult class
                 misclassified = np.sum(
                     covered_antecedent & dataset_mask) - np.sum(correctly_covered & dataset_mask)
 

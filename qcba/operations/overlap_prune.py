@@ -24,9 +24,10 @@ class Prune_Overlap:
     def prune_transaction_based(self, rules, default_class):
         new_rules = self.copy_rules(rules)
 
-        for idx, rule in enumerate(rules):
+        for idx, rule in enumerate(rules):            
             rule_classname, rule_classval = rule.consequent
-
+            
+            # Iterates over all the rules to check if the rules class is same as the default class
             if rule_classval != default_class:
                 continue
 
@@ -38,6 +39,7 @@ class Prune_Overlap:
             for candidate_clash in rules[idx:]:
                 cand_classname, cand_classval = candidate_clash.consequent
 
+                # removes the rule if it is covered by default class
                 if cand_classval == default_class:
                     continue
 
