@@ -11,13 +11,13 @@ Two part Implementation:
 * Building a classifier
 
 ## Datasets Used
-* **breast-w** – Original Wisconsin Breast Cancer Database, from Dr Wolberg clinical cases.
-* **iris** – Pattern recognition database containing 3 types of iris plants.
-* **pima-diabetes** – Prediction of onset of diabetes, based on diagnostics
-* **heart** – Cleveland database referring to the presence of heart disease in a patient.
-* **tic-tac-toe** – Binary classification task on possible configurations of tic-tac-toe games.
-* **acute-inflammations (additional)** – Presumptive diagnosis of two diseases in the urinary system.
-* **balance-scale (additional)** – Psychological experiments based on a balance scale.
+* **``breast-w``** – Original Wisconsin Breast Cancer Database, from Dr Wolberg clinical cases.
+* **`iris`** – Pattern recognition database containing 3 types of iris plants.
+* **`pima-diabetes`** – Prediction of onset of diabetes, based on diagnostics
+* **`heart`** – Cleveland database referring to the presence of heart disease in a patient.
+* **`tic-tac-toe`** – Binary classification task on possible configurations of tic-tac-toe games.
+* **`acute-inflammations (additional)`** – Presumptive diagnosis of two diseases in the urinary system.
+* **`balance-scale (additional)`** – Psychological experiments based on a balance scale.
 
 ## Comparison with Other Classification Methods
 * Random Forest
