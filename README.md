@@ -30,7 +30,7 @@ Two part Implementation:
 ---
 
 ### Authors
-* Gupta Jay
-* Kanodia Ritwik
-* Dandapath Soham
-* Mundhra Divyesh
+* [Gupta Jay](https://github.com/guptajay)
+* [Kanodia Ritwik](https://github.com/ritwikkanodia)
+* [Dandapath Soham](https://github.com/12dash)
+* [Mundhra Divyesh](https://github.com/divyeshmundhra)
